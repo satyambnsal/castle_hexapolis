@@ -2,7 +2,8 @@
 # Dozo App
 
 ## Overview
-
+Figma Link:
+https://www.figma.com/team_invite/redeem/vHpcgm1U0vXa47JqhZ05Hg
 
 ## Resources
 
