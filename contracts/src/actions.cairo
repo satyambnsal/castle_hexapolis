@@ -52,13 +52,18 @@ mod actions {
 
             assign_score(world, player_id, 0);
             assign_remaining_moves(world, player_id, REMAINING_MOVES_DEFAULT);
+
+            // set default tiles for game.
             set!(
                 world,
                 (Tile { player_id, row: GRID_SIZE, col: GRID_SIZE, tile_type: TileType::Center })
             )
         }
 
-        fn place_tile(self: @ContractState, tile: (u8, u8)) {}
+        fn place_tile(self: @ContractState, tile1: (u8, u8, u8)) {// 1. check if player remaining moves are greater than zero
+        // 2. check if tile, row, col, are in bounds.
+
+        }
 
         // ----- ADMIN FUNCTIONS -----
         // These functions are only callable by the owner of the world
@@ -105,5 +110,9 @@ mod actions {
         world: IWorldDispatcher, player_id: u128, score: u8, moves: u8
     ) {
         set!(world, (Score { player_id, score }, RemainingMoves { player_id, moves }));
+    }
+
+    fn is_tile_in_boundry(row: u8, col: u8) -> bool {
+        (row >= 0 && row <= 2 * GRID_SIZE + 1) && (col >= 0 && col <= 2 * GRID_SIZE + 1)
     }
 }

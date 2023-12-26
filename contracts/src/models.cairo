@@ -26,16 +26,6 @@ impl TileTypeIntoFelt252 of Into<TileType, felt252> {
     }
 }
 
-
-// #[derive(Model, Copy, Drop, Serde)]
-// struct Tile {
-//     #[key]
-//     player_id: u128,
-//     row: u8,
-//     col: u8,
-//     tile_type: TileType
-// }
-
 #[derive(Model, Copy, Drop, Serde)]
 struct Tile {
     #[key]
