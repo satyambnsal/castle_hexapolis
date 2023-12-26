@@ -12,8 +12,7 @@ mod actions {
 
     // import models
     use castle_hexapolis::models::{
-        GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerID,
-        PlayerAtTile
+        GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerID
     };
 
     // import config
@@ -98,7 +97,7 @@ mod actions {
 
     // @dev: Returns player id at tile
     fn player_at_tile(world: IWorldDispatcher, x: u8, y: u8) -> u128 {
-        get!(world, (x, y), (PlayerAtTile)).player_id
+        get!(world, (x, y), (Tile)).player_id
     }
 
     // @dev: Sets player score and remaining moves

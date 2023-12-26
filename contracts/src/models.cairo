@@ -2,7 +2,7 @@ use starknet::ContractAddress;
 use debug::PrintTrait;
 
 // Declaration of an enum named 'Direction' with five variants
-#[derive(Serde, Copy, Drop, Introspect)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum TileType {
     Empty,
     WindMill,
@@ -27,17 +27,17 @@ impl TileTypeIntoFelt252 of Into<TileType, felt252> {
 }
 
 
-#[derive(Model, Copy, Drop, Serde)]
-struct Tile {
-    #[key]
-    player_id: u128,
-    row: u8,
-    col: u8,
-    tile_type: TileType
-}
+// #[derive(Model, Copy, Drop, Serde)]
+// struct Tile {
+//     #[key]
+//     player_id: u128,
+//     row: u8,
+//     col: u8,
+//     tile_type: TileType
+// }
 
 #[derive(Model, Copy, Drop, Serde)]
-struct PlayerAtTile {
+struct Tile {
     #[key]
     row: u8,
     #[key]
@@ -82,3 +82,27 @@ struct GameData {
     available_ids: u128
 }
 const GAME_DATA_KEY: felt252 = 'castle_hexapolis_game';
+
+
+#[derive(Drop, Copy, Serde)]
+enum Direction {
+    East: (),
+    NorthEast: (),
+    NorthWest: (),
+    West: (),
+    SouthWest: (),
+    SouthEast: (),
+}
+
+impl DirectionIntoFelt252 of Into<Direction, felt252> {
+    fn into(self: Direction) -> felt252 {
+        match self {
+            Direction::East => 0,
+            Direction::NorthEast => 1,
+            Direction::NorthWest => 2,
+            Direction::West => 3,
+            Direction::SouthWest => 4,
+            Direction::SouthEast => 5,
+        }
+    }
+}

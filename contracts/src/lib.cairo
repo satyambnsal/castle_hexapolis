@@ -3,4 +3,4 @@ mod models;
 mod utils;
 mod interface;
 mod config;
-// mod testing;
+mod testing;
