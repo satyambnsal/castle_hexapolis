@@ -4,6 +4,8 @@ import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import { phaserConfig } from "../../phaser/config/configurePhaser";
 import { usePromiseValue } from "./usePromiseValue";
 
+import { config } from "../../phaser/phaser-hex/Game";
+
 type Props = {
     networkLayer: NetworkLayer | null;
 };
