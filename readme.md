@@ -1,6 +1,25 @@
 
 # Dozo App
 
+
+
+
+
+# How to run client
+We are going to use `bun` as a package manager. you can use `npm` or `yarn ` as well.
+
+```
+cd client
+```
+
+```
+bun install
+```
+
+```
+bun run dev
+```
+
 ## Overview
 Figma Link:
 https://www.figma.com/team_invite/redeem/vHpcgm1U0vXa47JqhZ05Hg
