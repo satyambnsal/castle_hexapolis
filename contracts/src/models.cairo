@@ -32,6 +32,7 @@ struct Tile {
     row: u8,
     #[key]
     col: u8,
+    #[key]
     player_id: u128,
     tile_type: TileType
 }

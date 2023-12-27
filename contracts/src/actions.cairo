@@ -6,13 +6,17 @@
 
 #[dojo::contract]
 mod actions {
+    use core::option::OptionTrait;
+    use core::array::ArrayTrait;
+    use core::traits::Into;
     use starknet::{ContractAddress, get_caller_address};
     use debug::PrintTrait;
     use castle_hexapolis::interface::IActions;
 
     // import models
     use castle_hexapolis::models::{
-        GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerID
+        GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerID,
+        Direction
     };
 
     // import config
@@ -60,9 +64,38 @@ mod actions {
             )
         }
 
-        fn place_tile(self: @ContractState, tile1: (u8, u8, u8)) {// 1. check if player remaining moves are greater than zero
-        // 2. check if tile, row, col, are in bounds.
+        fn place_tile(self: @ContractState, tile1: (u8, u8, TileType)) {
+            let world = self.world_dispatcher.read();
 
+            let player_address = get_caller_address();
+            // Get player ID
+            let player_id = get!(world, player_address, (PlayerID)).player_id;
+
+            let mut remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
+            assert(remaining_moves > 0, 'no moves left');
+            let (row_1, col_1, tile_type_1) = tile1;
+
+            // tile type validation
+            assert(
+                tile_type_1 == TileType::Grass
+                    || tile_type_1 == TileType::Street
+                    || tile_type_1 == TileType::WindMill,
+                'invalid tile type'
+            );
+
+            // check if tile coordinates are within map boundry
+            assert(is_tile_in_boundry(row_1, col_1), 'invalid tile position');
+
+            // check if tile is already occupied
+            assert(!is_tile_occupied(world, row_1, col_1, player_id), 'tile is already occupied');
+
+            // check if neighbour tile is settled
+            assert(
+                is_neighbor_settled(
+                    world, Tile { row: row_1, col: col_1, player_id, tile_type: tile_type_1 }
+                ),
+                'neighbour is not settled'
+            )
         }
 
         // ----- ADMIN FUNCTIONS -----
@@ -101,9 +134,9 @@ mod actions {
 
 
     // @dev: Returns player id at tile
-    fn player_at_tile(world: IWorldDispatcher, x: u8, y: u8) -> u128 {
-        get!(world, (x, y), (Tile)).player_id
-    }
+    // fn player_at_tile(world: IWorldDispatcher, x: u8, y: u8) -> u128 {
+    //     get!(world, (x, y), (Tile)).player_id
+    // }
 
     // @dev: Sets player score and remaining moves
     fn player_score_and_remaining_moves(
@@ -114,5 +147,84 @@ mod actions {
 
     fn is_tile_in_boundry(row: u8, col: u8) -> bool {
         (row >= 0 && row <= 2 * GRID_SIZE + 1) && (col >= 0 && col <= 2 * GRID_SIZE + 1)
+    }
+
+    fn is_tile_occupied(world: IWorldDispatcher, row: u8, col: u8, player_id: u128) -> bool {
+        let tile = get!(world, (row, col, player_id), (Tile));
+        // 'tile'.print();
+        // tile.player_id.print();
+        // tile.row.print();
+        // let t: TileType = tile.tile_type;
+        // let t1: felt252 = t.into();
+        // t1.print();
+
+        tile.tile_type != TileType::Empty
+    }
+
+    fn neighbor(world: IWorldDispatcher, tile: Tile, direction: Direction) -> Tile {
+        match direction {
+            Direction::East(()) => get!(world, (tile.row, tile.col + 1, tile.player_id), (Tile)),
+            Direction::NorthEast(()) => get!(
+                world, (tile.row - 1, tile.col + 1, tile.player_id), (Tile)
+            ),
+            Direction::NorthWest(()) => get!(
+                world, (tile.row - 1, tile.col, tile.player_id), (Tile)
+            ),
+            Direction::West(()) => get!(world, (tile.row, tile.col - 1, tile.player_id), (Tile)),
+            Direction::SouthWest(()) => get!(
+                world, (tile.row + 1, tile.col, tile.player_id), (Tile)
+            ),
+            Direction::SouthEast(()) => get!(
+                world, (tile.row + 1, tile.col + 1, tile.player_id), (Tile)
+            ),
+        }
+    }
+
+    fn neighbors(world: IWorldDispatcher, tile: Tile) -> Array<Tile> {
+        array![
+            neighbor(world, tile, Direction::East(())),
+            neighbor(world, tile, Direction::NorthEast(())),
+            neighbor(world, tile, Direction::NorthWest(())),
+            neighbor(world, tile, Direction::West(())),
+            neighbor(world, tile, Direction::SouthWest(())),
+            neighbor(world, tile, Direction::SouthEast(()))
+        ]
+    }
+
+    fn is_neighbor(world: IWorldDispatcher, tile: Tile, other: Tile) -> bool {
+        let mut neighbors = neighbors(world, tile);
+        loop {
+            if (neighbors.len() == 0) {
+                break false;
+            }
+
+            let curent_neighbor = neighbors.pop_front().unwrap();
+
+            if (curent_neighbor.col == other.col) {
+                if (curent_neighbor.row == other.row) {
+                    break true;
+                }
+            };
+        }
+    }
+
+    fn is_neighbor_settled(world: IWorldDispatcher, tile: Tile) -> bool {
+        let mut neighbors = neighbors(world, tile);
+        // 'neightbour len'.print();
+        // neighbors.len().print();
+        loop {
+            if (neighbors.len() == 0) {
+                break false;
+            }
+            let current_neighbour = neighbors.pop_front().unwrap();
+            // 'neightbour x'.print();
+            // current_neighbour.row.print();
+            // 'neighbour y'.print();
+            // current_neighbour.col.print();
+            if ((current_neighbour.tile_type != TileType::Empty)
+                && current_neighbour.tile_type != TileType::Port) {
+                break true;
+            }
+        }
     }
 }

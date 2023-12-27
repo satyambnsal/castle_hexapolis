@@ -79,11 +79,31 @@ mod tests {
         assert(remaining_moves.moves == REMAINING_MOVES_DEFAULT, 'incorrect remaining moves');
 
         // get player id
-        let tile = get!(world, (GRID_SIZE, GRID_SIZE), (Tile));
+        let tile = get!(world, (GRID_SIZE, GRID_SIZE, player_id), (Tile));
         assert(tile.player_id == player_id, 'Center tile is not set');
         assert(tile.tile_type == TileType::Center, 'incorrect tile type');
     }
 
+    #[test]
+    #[available_gas(30000000000)]
+    fn place_tile_test() {
+        let (caller, world, actions_) = spawn_world();
+        actions_.spawn();
+
+        let tile1 = (3, 4, TileType::Grass);
+        actions_.place_tile(tile1);
+    }
+
+
+    #[test]
+    #[available_gas(300000000000)]
+    #[should_panic]
+    fn place_distant_tile() {
+        let (caller, world, actions_) = spawn_world();
+        actions_.spawn();
+        let tile1 = (4, 4, TileType::Grass);
+        actions_.place_tile(tile1);
+    }
 // #[test]
 // #[available_gas(30000000)]
 // fn dead_test() {
