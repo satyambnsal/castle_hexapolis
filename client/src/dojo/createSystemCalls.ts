@@ -8,15 +8,15 @@ import { updatePositionWithDirection } from "./utils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
+const ACTIONS_PATH = "actions";
+
 export function createSystemCalls(
     { execute }: SetupNetworkResult,
     { Position, PlayerID, Energy }: ClientComponents
 ) {
     const spawn = async (props: SpawnSystemProps) => {
         try {
-            await execute(props.signer, "emojiman::actions::actions", "spawn", [
-                props.rps,
-            ]);
+            await execute(props.signer, ACTIONS_PATH, "spawn", [props.rps]);
         } catch (e) {
             console.error(e);
         }
@@ -66,7 +66,7 @@ export function createSystemCalls(
         try {
             const { transaction_hash } = await execute(
                 signer,
-                "emojiman::actions::actions",
+                ACTIONS_PATH,
                 "move",
                 [direction]
             );
