@@ -92,7 +92,15 @@ mod actions {
                 counted: false,
                 is_hill: false
             };
-            assert(is_neighbor_settled(world, new_tile), 'neighbour is not settled')
+            assert(is_neighbor_settled(world, new_tile), 'neighbour is not settled');
+
+            let mut player_score = get!(world, player_id, (Score)).score;
+            let mut remaining_move = get!(world, player_id, (RemainingMoves)).moves;
+
+            set!(world, (new_tile));
+            player_score += calculate_score_for_tile(world, new_tile);
+            remaining_moves -= 1;
+            set_player_score_and_remaining_moves(world, player_id, player_score, remaining_move);
         }
 
         // ----- ADMIN FUNCTIONS -----
@@ -136,11 +144,12 @@ mod actions {
     // }
 
     // @dev: Sets player score and remaining moves
-    fn player_score_and_remaining_moves(
+    fn set_player_score_and_remaining_moves(
         world: IWorldDispatcher, player_id: u128, score: u8, moves: u8
     ) {
         set!(world, (Score { player_id, score }, RemainingMoves { player_id, moves }));
     }
+
 
     fn is_tile_in_boundry(row: u8, col: u8) -> bool {
         (row >= 0 && row <= 2 * GRID_SIZE + 1) && (col >= 0 && col <= 2 * GRID_SIZE + 1)

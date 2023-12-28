@@ -1,8 +1,9 @@
 {
-    "name": "react-phaser-example",
+    "name": "castle_hexapolis",
     "private": true,
     "version": "0.1.0",
     "type": "module",
+    "author": {"name": "Satyam Bansal"},
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
