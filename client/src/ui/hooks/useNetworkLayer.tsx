@@ -9,9 +9,12 @@ export const useNetworkLayer = () => {
 
     useEffect(() => {
         return () => {
-            networkLayerPromise.then((networkLayer) =>
-                networkLayer.world.dispose()
-            );
+            networkLayerPromise
+                .then((networkLayer) => networkLayer?.world?.dispose())
+                .catch((err) => {
+                    console.log("####### Network layer hook error #######");
+                    console.error(err);
+                });
         };
     }, [networkLayerPromise]);
 

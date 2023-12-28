@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPhaserLayer } from "../../phaser";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
-import { phaserConfig } from "../../phaser/config/configurePhaser";
+// import { phaserConfig } from "../../phaser/config/configurePhaser";
 import { usePromiseValue } from "./usePromiseValue";
 
-import { config } from "../../phaser/phaser-hex/Game";
+import { config as phaserConfig } from "../../phaser/phaser-hex/phaser-config";
 
 type Props = {
     networkLayer: NetworkLayer | null;
@@ -16,12 +16,13 @@ const createContainer = () => {
     container.style.height = "100%";
     container.style.pointerEvents = "all";
     container.style.overflow = "hidden";
+    container.id = "hex-game";
     return container;
 };
 
 export const usePhaserLayer = ({ networkLayer }: Props) => {
     const parentRef = useRef<HTMLElement | null>(null);
-    const [{ width, height }] = useState({ width: 0, height: 0 });
+    // const [{ width, height }] = useState({ width: 0, height: 0 });
 
     const { phaserLayerPromise, container } = useMemo(() => {
         if (!networkLayer) return { container: null, phaserLayerPromise: null };
@@ -35,13 +36,6 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
             container,
             phaserLayerPromise: createPhaserLayer(networkLayer, {
                 ...phaserConfig,
-                scale: {
-                    ...phaserConfig.scale,
-                    parent: container,
-                    mode: Phaser.Scale.NONE,
-                    width,
-                    height,
-                },
             }),
         };
     }, [networkLayer]);
