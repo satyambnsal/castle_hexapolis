@@ -34,7 +34,9 @@ struct Tile {
     col: u8,
     #[key]
     player_id: u128,
-    tile_type: TileType
+    tile_type: TileType,
+    counted: bool,
+    is_hill: bool
 }
 
 #[derive(Model, Copy, Drop, Serde)]

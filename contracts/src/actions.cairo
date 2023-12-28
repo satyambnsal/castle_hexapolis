@@ -39,11 +39,8 @@ mod actions {
     impl ActionsImpl of IActions<ContractState> {
         fn spawn(self: @ContractState) {
             let world = self.world_dispatcher.read();
-
-            // player address
             let player_address = get_caller_address();
 
-            // game data
             let mut game_data = get!(world, GAME_DATA_KEY, (GameData));
 
             // increment player count
@@ -57,11 +54,7 @@ mod actions {
             assign_score(world, player_id, 0);
             assign_remaining_moves(world, player_id, REMAINING_MOVES_DEFAULT);
 
-            // set default tiles for game.
-            set!(
-                world,
-                (Tile { player_id, row: GRID_SIZE, col: GRID_SIZE, tile_type: TileType::Center })
-            )
+            place_default_tiles(world, player_id);
         }
 
         fn place_tile(self: @ContractState, tile1: (u8, u8, TileType)) {
@@ -90,12 +83,15 @@ mod actions {
             assert(!is_tile_occupied(world, row_1, col_1, player_id), 'tile is already occupied');
 
             // check if neighbour tile is settled
-            assert(
-                is_neighbor_settled(
-                    world, Tile { row: row_1, col: col_1, player_id, tile_type: tile_type_1 }
-                ),
-                'neighbour is not settled'
-            )
+            let mut new_tile = Tile {
+                row: row_1,
+                col: col_1,
+                player_id,
+                tile_type: tile_type_1,
+                counted: false,
+                is_hill: false
+            };
+            assert(is_neighbor_settled(world, new_tile), 'neighbour is not settled')
         }
 
         // ----- ADMIN FUNCTIONS -----
@@ -180,19 +176,37 @@ mod actions {
         }
     }
 
-    fn neighbors(world: IWorldDispatcher, tile: Tile) -> Array<Tile> {
-        array![
+    fn get_neighbors(world: IWorldDispatcher, tile: Tile) -> Array<Tile> {
+        let mut result = ArrayTrait::<Tile>::new();
+
+        let mut all_neighbours = array![
             neighbor(world, tile, Direction::East(())),
             neighbor(world, tile, Direction::NorthEast(())),
             neighbor(world, tile, Direction::NorthWest(())),
             neighbor(world, tile, Direction::West(())),
             neighbor(world, tile, Direction::SouthWest(())),
             neighbor(world, tile, Direction::SouthEast(()))
-        ]
+        ];
+
+        loop {
+            if (all_neighbours.len() == 0) {
+                break;
+            }
+
+            let current = all_neighbours.pop_front().unwrap();
+            if (is_tile_in_boundry(current.row, current.col)) {
+                result.append(current);
+            }
+        };
+        'neighbours len'.print();
+        result.len().print();
+
+        result
     }
 
+
     fn is_neighbor(world: IWorldDispatcher, tile: Tile, other: Tile) -> bool {
-        let mut neighbors = neighbors(world, tile);
+        let mut neighbors = get_neighbors(world, tile);
         loop {
             if (neighbors.len() == 0) {
                 break false;
@@ -209,7 +223,7 @@ mod actions {
     }
 
     fn is_neighbor_settled(world: IWorldDispatcher, tile: Tile) -> bool {
-        let mut neighbors = neighbors(world, tile);
+        let mut neighbors = get_neighbors(world, tile);
         // 'neightbour len'.print();
         // neighbors.len().print();
         loop {
@@ -226,5 +240,138 @@ mod actions {
                 break true;
             }
         }
+    }
+
+    fn place_default_tiles(world: IWorldDispatcher, player_id: u128) {
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: GRID_SIZE,
+                col: GRID_SIZE,
+                tile_type: TileType::Center,
+                counted: false,
+                is_hill: false
+            })
+        );
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: 0,
+                col: GRID_SIZE,
+                tile_type: TileType::Port,
+                counted: false,
+                is_hill: false
+            })
+        );
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: 0,
+                col: GRID_SIZE * 2,
+                tile_type: TileType::Port,
+                counted: false,
+                is_hill: false
+            })
+        );
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: GRID_SIZE,
+                col: 0,
+                tile_type: TileType::Port,
+                counted: false,
+                is_hill: false
+            })
+        );
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: GRID_SIZE,
+                col: GRID_SIZE * 2,
+                tile_type: TileType::Port,
+                counted: false,
+                is_hill: false
+            })
+        );
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: GRID_SIZE * 2,
+                col: 0,
+                tile_type: TileType::Port,
+                counted: false,
+                is_hill: false
+            })
+        );
+        set!(
+            world,
+            (Tile {
+                player_id,
+                row: GRID_SIZE * 2,
+                col: GRID_SIZE,
+                tile_type: TileType::Port,
+                counted: false,
+                is_hill: false
+            })
+        );
+    }
+
+    fn calculate_score_for_tile(world: IWorldDispatcher, tile: Tile) -> u8 {
+        if (tile.counted) {
+            return 0;
+        }
+
+        if (tile.tile_type == TileType::WindMill) {
+            let mut isolated = true;
+            let mut score = 0;
+
+            let mut neighbors = get_neighbors(world, tile);
+
+            loop {
+                if (neighbors.len() == 0) {
+                    break;
+                }
+
+                let current_neighbour = neighbors.pop_front().unwrap();
+                if (current_neighbour.tile_type == TileType::WindMill) {
+                    isolated = false;
+                    if (current_neighbour.counted) {
+                        set!(
+                            world,
+                            Tile {
+                                row: current_neighbour.row,
+                                col: current_neighbour.col,
+                                player_id: current_neighbour.player_id,
+                                is_hill: current_neighbour.is_hill,
+                                tile_type: current_neighbour.tile_type,
+                                counted: false
+                            }
+                        );
+                        if (current_neighbour.is_hill) {
+                            score -= 3;
+                        } else {
+                            score -= 1;
+                        }
+                    }
+                }
+            };
+
+            if (isolated) {
+                if (tile.is_hill) {
+                    score += 3;
+                } else {
+                    score += 1;
+                }
+            }
+
+            return score;
+        }
+        0
     }
 }

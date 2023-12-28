@@ -104,27 +104,15 @@ mod tests {
         let tile1 = (4, 4, TileType::Grass);
         actions_.place_tile(tile1);
     }
-// #[test]
-// #[available_gas(30000000)]
-// fn dead_test() {
-//     let (caller, world, actions_) = spawn_world();
-
-//     actions_.spawn('r');
-//     // Get player ID
-//     let player_id = get!(world, caller, (PlayerID)).id;
-
-//     let (position, rps_type, energy) = get!(world, player_id, (Position, RPSType, Energy));
-
-//     // kill player
-//     actions::player_dead(world, player_id);
-
-//     // player models should be 0
-//     let (position, rps_type, energy) = get!(world, player_id, (Position, RPSType, Energy));
-//     assert(0 == position.x, 'incorrect position.x');
-//     assert(0 == position.y, 'incorrect position.y');
-//     assert(0 == energy.amt, 'incorrect energy');
-// }
-
+    #[test]
+    #[available_gas(30000000)]
+    fn neighbour_test() {
+        let (caller, world, actions_) = spawn_world();
+        let tile = get!(world, (0, 0, 0), (Tile));
+        tile.counted.print();
+        let neighbours = actions::get_neighbors(world, tile);
+        assert(neighbours.len() == 3, 'length should be 3');
+    }
 // #[test]
 // #[available_gas(30000000)]
 // fn random_spawn_test() {
