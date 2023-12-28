@@ -1,10 +1,9 @@
 import { SetupNetworkResult } from "./setupNetwork";
 import { ClientComponents } from "./createClientComponents";
-import { MoveSystemProps, SpawnSystemProps } from "./types";
+import { PlaceTileSystemProps, SystemSigner } from "./types";
 import { uuid } from "@latticexyz/utils";
 import { Entity, getComponentValue } from "@dojoengine/recs";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
-import { updatePositionWithDirection } from "./utils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -14,7 +13,7 @@ export function createSystemCalls(
     { execute }: SetupNetworkResult,
     { Score, PlayerId, RemainingMoves, Tile }: ClientComponents
 ) {
-    const spawn = async (props: SpawnSystemProps) => {
+    const spawn = async (props: SystemSigner) => {
         try {
             await execute(props.signer, ACTIONS_PATH, "spawn", []);
         } catch (e) {
@@ -22,9 +21,10 @@ export function createSystemCalls(
         }
     };
 
-    const move = async (props: MoveSystemProps) => {
-        const { signer, direction } = props;
-
+    const place_tile = async (props: PlaceTileSystemProps) => {
+        const { signer, tiles } = props;
+        const [tile1, tile2, tile3] = tiles;
+        console.log("Tile 1", tile1);
         // // get player ID
         // const playerId = getEntityIdFromKeys([
         //     BigInt(signer.address),
@@ -93,6 +93,6 @@ export function createSystemCalls(
 
     return {
         spawn,
-        move,
+        place_tile,
     };
 }

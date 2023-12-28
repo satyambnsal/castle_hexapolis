@@ -36,25 +36,11 @@ export const Spawn = () => {
                             onClick={async () => {
                                 await spawn({
                                     signer: account,
-                                    rps: RPSSprites[
-                                        key as keyof typeof RPSSprites
-                                    ],
                                 });
-
                                 setLoggedIn();
                             }}
                         >
-                            Spawn {key}
-                            <img
-                                className="w-8 h-8"
-                                src={
-                                    ImagePaths[
-                                        RPSSprites[
-                                            key as keyof typeof RPSSprites
-                                        ]
-                                    ]
-                                }
-                            />
+                            Start Game
                         </Button>
                     </div>
                 ))}

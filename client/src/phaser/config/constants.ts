@@ -1,6 +1,7 @@
 export enum Scenes {
+    Menu = "Menu",
+    Load = "Load",
     Main = "Main",
-    Load = "Load"
 }
 
 export enum Maps {
