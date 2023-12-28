@@ -1,4 +1,4 @@
-import { Queue, Matrix2D } from "./util";
+import { Queue, Matrix2D } from "../util";
 
 export const shapes = {
     a: [

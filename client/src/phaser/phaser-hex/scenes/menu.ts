@@ -1,4 +1,4 @@
-import { HexGrid } from "../hexGrid";
+import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
 
 const tutorialTexts = [

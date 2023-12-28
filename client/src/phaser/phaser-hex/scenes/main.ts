@@ -5,7 +5,7 @@ import {
     Hex,
     HEX_HEIGHT,
     HEX_WIDTH,
-} from "../hexGrid";
+} from "../hex-grid";
 import { Button, pick, shuffle } from "../util";
 
 export class MainScene extends Phaser.Scene {
