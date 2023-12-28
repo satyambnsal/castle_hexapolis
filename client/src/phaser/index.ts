@@ -4,7 +4,7 @@ import { registerSystems } from "./systems/registerSystems";
 import { namespaceWorld } from "@dojoengine/recs";
 // import { TILE_HEIGHT, TILE_WIDTH } from "./config/constants";
 import Phaser from "phaser";
-import { Scenes } from "./constants";
+// import { Scenes } from "./constants";
 
 export type PhaserLayer = Awaited<ReturnType<typeof createPhaserLayer>>;
 
@@ -24,7 +24,6 @@ export const createPhaserLayer = async (
     // camera.phaserCamera.centerOn(1500, 1500);
 
     const components = {};
-    console.log("scenes", phaserGame.scene);
     const layer = {
         networkLayer,
         world,
