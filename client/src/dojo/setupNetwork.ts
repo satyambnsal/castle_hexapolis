@@ -44,9 +44,7 @@ export async function setupNetwork() {
         toriiClient,
         account,
         burnerManager,
-        // Define contract components for the world.
         contractComponents: defineContractComponents(world),
-        // Execute function.
         execute: async (
             signer: Account,
             contract: string,

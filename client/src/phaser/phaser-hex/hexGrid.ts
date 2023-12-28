@@ -821,14 +821,7 @@ export class HexGrid extends Phaser.GameObjects.Group {
 
             // calculate scores
             for (let i = 0; i < 3; i++) {
-                if (hexes[i].hexType === 1) {
-                    this.getPointsFor(hexes[i]);
-                }
-            }
-            for (let i = 0; i < 3; i++) {
-                if (hexes[i].hexType !== 1) {
-                    this.getPointsFor(hexes[i]);
-                }
+                this.getPointsFor(hexes[i]);
             }
 
             this.updateEdges();
@@ -837,8 +830,6 @@ export class HexGrid extends Phaser.GameObjects.Group {
             return false;
         }
     }
-
-    addHex(row: number, col: number, type: number) {}
 
     // returns connected hexes INCLUDING itself
     getConnected(hex: Hex): Hex[] {
