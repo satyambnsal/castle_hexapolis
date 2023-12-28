@@ -3,18 +3,20 @@
     "private": true,
     "version": "0.1.0",
     "type": "module",
-    "author": {"name": "Satyam Bansal"},
+    "author": {
+        "name": "Satyam Bansal"
+    },
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
         "codegen": "graphql-codegen",
-        "components": "npx @dojoengine/core ../contracts/target/release/manifest.json src/dojo/contractComponents.ts https://api.cartridge.gg/x/emoji-man-demo/katana 0x1fad58d91d5d121aa6dc4d16c01a161e0441ef75fe7d31e3664a61e66022b1f",
+        "components": "npx @dojoengine/core ../contracts/target/release/manifest.json src/dojo/contractComponents.ts http://localhost:5050 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15",
         "copy-target": "cp -r ../contracts/target src/target"
     },
     "dependencies": {
-        "@dojoengine/core": "^0.2.0",
+        "@dojoengine/core": "0.2.10",
         "@dojoengine/create-burner": "^0.2.0",
         "@dojoengine/react": "^0.2.0",
         "@dojoengine/recs": "0.1.35",
