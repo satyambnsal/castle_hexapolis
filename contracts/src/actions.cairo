@@ -14,7 +14,7 @@ mod actions {
 
     // import models
     use castle_hexapolis::models::{
-        GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerID,
+        GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerId,
         Direction
     };
 
@@ -61,7 +61,7 @@ mod actions {
 
             let player_address = get_caller_address();
             // Get player ID
-            let player_id = get!(world, player_address, (PlayerID)).player_id;
+            let player_id = get!(world, player_address, (PlayerId)).player_id;
 
             assert(player_id > 0, 'player does not exist');
 
@@ -124,7 +124,7 @@ mod actions {
         let player_id: u128 = num_players;
         set!(
             world,
-            (PlayerID { player_address, player_id }, PlayerAddress { player_address, player_id })
+            (PlayerId { player_address, player_id }, PlayerAddress { player_address, player_id })
         );
         player_id
     }

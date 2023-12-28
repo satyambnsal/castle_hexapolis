@@ -40,7 +40,7 @@ struct Tile {
 }
 
 #[derive(Model, Copy, Drop, Serde)]
-struct PlayerID {
+struct PlayerId {
     #[key]
     player_address: ContractAddress,
     player_id: u128
