@@ -95,12 +95,12 @@ mod actions {
             assert(is_neighbor_settled(world, new_tile), 'neighbour is not settled');
 
             let mut player_score = get!(world, player_id, (Score)).score;
-            let mut remaining_move = get!(world, player_id, (RemainingMoves)).moves;
+            let mut remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
 
             set!(world, (new_tile));
             player_score += calculate_score_for_tile(world, new_tile);
             remaining_moves -= 1;
-            set_player_score_and_remaining_moves(world, player_id, player_score, remaining_move);
+            set_player_score_and_remaining_moves(world, player_id, player_score, remaining_moves);
         }
 
         // ----- ADMIN FUNCTIONS -----

@@ -104,6 +104,26 @@ mod tests {
         let tile1 = (4, 4, TileType::Grass);
         actions_.place_tile(tile1);
     }
+
+
+    #[test]
+    #[available_gas(300000000000)]
+    fn remaining_moves_test() {
+        let (caller, world, actions_) = spawn_world();
+        actions_.spawn();
+        let player_id = get!(world, caller, (PlayerID)).player_id;
+        let tile1 = (3, 4, TileType::Grass);
+        let tile2 = (2, 3, TileType::Grass);
+        let tile3 = (4, 3, TileType::WindMill);
+        actions_.place_tile(tile1);
+        actions_.place_tile(tile2);
+        actions_.place_tile(tile3);
+
+        let remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
+        assert(remaining_moves == REMAINING_MOVES_DEFAULT - 3, 'incorrect remaining moves');
+    }
+
+
     #[test]
     #[available_gas(30000000)]
     #[ignore]
