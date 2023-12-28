@@ -14,3 +14,8 @@ export type Tile = {
 export interface PlaceTileSystemProps extends SystemSigner {
     tiles: Tile[];
 }
+
+export type SystemCallsType = {
+    spawn: (props: SystemSigner) => Promise<void>;
+    place_tile: (props: PlaceTileSystemProps) => Promise<void>;
+};

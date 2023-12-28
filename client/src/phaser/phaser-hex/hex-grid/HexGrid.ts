@@ -3,6 +3,7 @@ import { rotations, shapes, HEX_HEIGHT, HEX_WIDTH } from "./constants";
 import { Trihex } from "./TriHex";
 import { Hex } from "./Hex";
 import { ScorePopper } from "./ScorePopper";
+import { Tile } from "../../../dojo/types";
 
 export class HexGrid extends Phaser.GameObjects.Group {
     grid: Matrix2D<Hex>;
@@ -374,7 +375,12 @@ export class HexGrid extends Phaser.GameObjects.Group {
         }
     }
 
-    placeTrihex(x: number, y: number, trihex: Trihex): boolean {
+    placeTrihex(
+        x: number,
+        y: number,
+        trihex: Trihex,
+        onPlaceTile?: (tiles: Tile[]) => void
+    ): boolean {
         if (trihex.shape === "a") {
             y -= HEX_HEIGHT / 2;
         }
@@ -416,15 +422,23 @@ export class HexGrid extends Phaser.GameObjects.Group {
             hexes[2].hexType === 0
         ) {
             this.scene.sound.play("place");
-
+            // prepare data for network call
+            const tiles: Tile[] = [];
             for (let i = 0; i < 3; i++) {
                 hexes[i].setType(trihex.hexes[i]);
+                tiles.push({
+                    row: hexes[i].row,
+                    col: hexes[i].col,
+                    tile_type: trihex.hexes[i],
+                });
             }
 
             // calculate scores
             for (let i = 0; i < 3; i++) {
                 this.getPointsFor(hexes[i]);
             }
+
+            onPlaceTile && onPlaceTile(tiles);
 
             this.updateEdges();
             return true;

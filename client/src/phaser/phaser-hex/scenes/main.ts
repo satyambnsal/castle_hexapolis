@@ -1,3 +1,5 @@
+import { SetupResult, setup } from "../../../dojo/setup";
+import { Tile } from "../../../dojo/types";
 import {
     HexGrid,
     Trihex,
@@ -42,9 +44,15 @@ export class MainScene extends Phaser.Scene {
     breakdownContainer: Phaser.GameObjects.Container | null = null;
     breakdownHexes: Hex[] = [];
     breakdownTexts: Phaser.GameObjects.BitmapText[] = [];
+    setupResult: SetupResult | null = null;
 
     constructor() {
         super("main");
+    }
+
+    async setupNetwork() {
+        const setupResult = await setup();
+        this.setupResult = setupResult;
     }
 
     create() {
@@ -197,6 +205,24 @@ export class MainScene extends Phaser.Scene {
         this.score += points;
         this.scoreBreakdown[hexType] += points;
         this.scoreText?.setText(String(this.score) + " points");
+    }
+
+    async onPlaceTile(tiles: Tile[]) {
+        if (!this.setupResult?.systemCalls) {
+            try {
+                const setupResult = await setup();
+                this.setupResult = setupResult;
+            } catch (err) {
+                console.log("Failed to set system calls in main scene");
+            }
+        }
+        if (!this.setupResult) return;
+        const {
+            systemCalls: { place_tile },
+            network: { account },
+        } = this.setupResult;
+        console.log("===== # Place Tile #==== ", { account, tiles });
+        place_tile({ signer: account, tiles });
     }
 
     openHelp() {
@@ -585,7 +611,8 @@ export class MainScene extends Phaser.Scene {
             this.grid.placeTrihex(
                 this.previewX,
                 this.previewY,
-                this.nextTrihex as Trihex
+                this.nextTrihex as Trihex,
+                this.onPlaceTile.bind(this)
             )
         ) {
             this.pickNextTrihex();
