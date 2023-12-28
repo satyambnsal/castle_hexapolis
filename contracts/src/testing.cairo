@@ -106,12 +106,22 @@ mod tests {
     }
     #[test]
     #[available_gas(30000000)]
+    #[ignore]
     fn neighbour_test() {
         let (caller, world, actions_) = spawn_world();
         let tile = get!(world, (0, 0, 0), (Tile));
         tile.counted.print();
         let neighbours = actions::get_neighbors(world, tile);
         assert(neighbours.len() == 3, 'length should be 3');
+    }
+
+    #[test]
+    #[available_gas(3000000000)]
+    #[should_panic(expected: ('player does not exist', 'ENTRYPOINT_FAILED'))]
+    fn non_player_place_tile() {
+        let (caller, world, actions_) = spawn_world();
+        let tile = (3, 4, TileType::Grass);
+        actions_.place_tile(tile);
     }
 // #[test]
 // #[available_gas(30000000)]

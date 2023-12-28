@@ -1,7 +1,6 @@
 //---------------------------------------------------------------------------------------------
 // *Actions Contract*
 // This contract handles all the actions that can be performed by the user
-// Typically you group functions that require similar authentication into a single contract
 //---------------------------------------------------------------------------------------------
 
 #[dojo::contract]
@@ -63,6 +62,8 @@ mod actions {
             let player_address = get_caller_address();
             // Get player ID
             let player_id = get!(world, player_address, (PlayerID)).player_id;
+
+            assert(player_id > 0, 'player does not exist');
 
             let mut remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
             assert(remaining_moves > 0, 'no moves left');
@@ -371,7 +372,9 @@ mod actions {
             }
 
             return score;
+        } else {
+            // Implement logic for tiletype street and grass
+            return 1;
         }
-        0
     }
 }
