@@ -3,7 +3,7 @@ import { useNetworkLayer } from "./ui/hooks/useNetworkLayer";
 import { PhaserLayer } from "./phaser/phaserLayer";
 import { store } from "./store";
 import { UI } from "./ui";
-import "./phaser/phaser-hex/phaser-config";
+import "./phaser/phaser-config";
 
 function App() {
     const networkLayer = useNetworkLayer();

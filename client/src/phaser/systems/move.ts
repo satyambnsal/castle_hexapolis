@@ -14,7 +14,7 @@ import {
     RPSSprites,
     TILE_HEIGHT,
     TILE_WIDTH,
-} from "../config/constants";
+} from "../constants";
 
 export const move = (layer: PhaserLayer) => {
     const entity_addresses: { [k: string]: string } = {};

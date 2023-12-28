@@ -1,5 +1,5 @@
 import { useDojo } from "./hooks/useDojo";
-import { ImagePaths, RPSSprites } from "../phaser/config/constants";
+import { ImagePaths, RPSSprites } from "../phaser/constants";
 import { Button } from "./button";
 import { useUIStore } from "../store";
 import { useEffect } from "react";

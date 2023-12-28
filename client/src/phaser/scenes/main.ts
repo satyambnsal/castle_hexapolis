@@ -1,5 +1,5 @@
-import { SetupResult, setup } from "../../../dojo/setup";
-import { Tile } from "../../../dojo/types";
+import { SetupResult, setup } from "../../dojo/setup";
+import { Tile } from "../../dojo/types";
 import {
     HexGrid,
     Trihex,

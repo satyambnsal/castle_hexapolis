@@ -4,7 +4,7 @@ import { registerSystems } from "./systems/registerSystems";
 import { namespaceWorld } from "@dojoengine/recs";
 // import { TILE_HEIGHT, TILE_WIDTH } from "./config/constants";
 import Phaser from "phaser";
-import { Scenes } from "./config/constants";
+import { Scenes } from "./constants";
 
 export type PhaserLayer = Awaited<ReturnType<typeof createPhaserLayer>>;
 

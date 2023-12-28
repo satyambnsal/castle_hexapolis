@@ -3,7 +3,7 @@ import { rotations, shapes, HEX_HEIGHT, HEX_WIDTH } from "./constants";
 import { Trihex } from "./TriHex";
 import { Hex } from "./Hex";
 import { ScorePopper } from "./ScorePopper";
-import { Tile } from "../../../dojo/types";
+import { Tile } from "../../dojo/types";
 
 export class HexGrid extends Phaser.GameObjects.Group {
     grid: Matrix2D<Hex>;
