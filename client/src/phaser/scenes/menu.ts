@@ -172,23 +172,24 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        if (!this.setupResult) {
-            this.setupResult = await setup();
-        }
-        if (!this.setupResult) {
-            alert("Failed to connect with katana network");
-            return;
-        }
-        console.log("setup result", this.setupResult);
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { network, systemCalls: { spawn } = {} } = this.setupResult;
-        const account = network?.account;
+        // if (!this.setupResult) {
+        //     this.setupResult = await setup();
+        // }
+        // if (!this.setupResult) {
+        //     alert("Failed to connect with katana network");
+        //     return;
+        // }
+        // console.log("setup result", this.setupResult);
+        // // eslint-disable-next-line react-hooks/rules-of-hooks
+        // const { network, systemCalls: { spawn } = {} } = this.setupResult;
+        // const account = network?.account;
 
-        try {
-            spawn && (await spawn({ signer: account }));
-        } catch (err) {
-            console.log("Failed to call spawn", err);
-        }
+        // try {
+        //     spawn && (await spawn({ signer: account }));
+        // } catch (err) {
+        //     console.log("Failed to call spawn", err);
+        // }
+
         this.cameras.main.pan(-1280, 0, 500, "Linear", true);
 
         this.time.addEvent({
