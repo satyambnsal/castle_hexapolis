@@ -208,7 +208,6 @@ export class MainScene extends Phaser.Scene {
             alert("Failed to connect to katana network");
             return;
         }
-
         const {
             systemCalls: { place_tile },
             network: { account },

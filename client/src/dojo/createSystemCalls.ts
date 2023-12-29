@@ -4,6 +4,7 @@ import { PlaceTileSystemProps, SystemSigner } from "./types";
 import { uuid } from "@latticexyz/utils";
 import { Entity, getComponentValue } from "@dojoengine/recs";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
+import { cairo } from "starknet";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -24,15 +25,32 @@ export function createSystemCalls(
     const place_tile = async (props: PlaceTileSystemProps) => {
         const { signer, tiles } = props;
         const [tile1, tile2, tile3] = tiles;
-        console.log("Tile 1", tile1);
+        console.log("Tile 1", tile1, signer);
         // // get player ID
-        // const playerId = getEntityIdFromKeys([
-        //     BigInt(signer.address),
-        // ]) as Entity;
+        const playerEntityId = getEntityIdFromKeys([
+            BigInt(signer.address),
+        ]) as Entity;
 
         // // get the RPS ID associated with the PlayerID
-        // const player_id = getComponentValue(PlayerId, playerId)?.player_id;
+        const player_id = getComponentValue(
+            PlayerId,
+            playerEntityId
+        )?.player_id;
 
+        try {
+            const { transaction_hash } = await execute(
+                signer,
+                ACTIONS_PATH,
+                "place_tile",
+                [BigInt(tile1.row), BigInt(tile1.col), BigInt(tile1.tile_type)]
+            );
+            console.log({ transaction_hash });
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (err) {
+            console.log("Failed to place tile", err);
+        }
+
+        console.log({ playerEntityId, player_id });
         // // get the RPS entity
         // const rpsEntity = getEntityIdFromKeys([
         //     BigInt(rpsId?.toString() || "0"),

@@ -90,7 +90,7 @@ mod tests {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
 
-        let tile1 = (3, 4, TileType::Grass);
+        let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Grass);
         actions_.place_tile(tile1);
     }
 
@@ -101,7 +101,7 @@ mod tests {
     fn place_distant_tile() {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
-        let tile1 = (4, 4, TileType::Grass);
+        let tile1 = (GRID_SIZE + 1, GRID_SIZE + 1, TileType::Grass);
         actions_.place_tile(tile1);
     }
 
@@ -112,9 +112,9 @@ mod tests {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
         let player_id = get!(world, caller, (PlayerId)).player_id;
-        let tile1 = (3, 4, TileType::Grass);
-        let tile2 = (2, 3, TileType::Grass);
-        let tile3 = (4, 3, TileType::WindMill);
+        let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Grass);
+        let tile2 = (GRID_SIZE - 1, GRID_SIZE, TileType::Grass);
+        let tile3 = (GRID_SIZE + 1, GRID_SIZE, TileType::WindMill);
         actions_.place_tile(tile1);
         actions_.place_tile(tile2);
         actions_.place_tile(tile3);
