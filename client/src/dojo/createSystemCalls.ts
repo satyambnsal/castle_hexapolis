@@ -24,8 +24,13 @@ export function createSystemCalls(
 
     const place_tile = async (props: PlaceTileSystemProps) => {
         const { signer, tiles } = props;
-        const [tile1, tile2, tile3] = tiles;
-        console.log("Tile 1", tile1, signer);
+        const calldata: bigint[] = [];
+        tiles.forEach(({ row, col, tile_type }) => {
+            calldata.push(BigInt(row));
+            calldata.push(BigInt(col));
+            calldata.push(BigInt(tile_type));
+        });
+        console.log("place tile calldata", calldata);
         // // get player ID
         const playerEntityId = getEntityIdFromKeys([
             BigInt(signer.address),
@@ -42,7 +47,7 @@ export function createSystemCalls(
                 signer,
                 ACTIONS_PATH,
                 "place_tile",
-                [BigInt(tile1.row), BigInt(tile1.col), BigInt(tile1.tile_type)]
+                [tiles.length, ...calldata]
             );
             console.log({ transaction_hash });
             await new Promise((resolve) => setTimeout(resolve, 1000));

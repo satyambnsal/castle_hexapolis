@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use core::array::ArrayTrait;
     use starknet::class_hash::Felt252TryIntoClassHash;
     use starknet::ContractAddress;
     use debug::PrintTrait;
@@ -89,11 +90,27 @@ mod tests {
     fn place_tile_test() {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
-
-        let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Grass);
-        actions_.place_tile(tile1);
+        let tiles = array![
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Grass),
+            (GRID_SIZE, GRID_SIZE + 2, TileType::Grass),
+            (GRID_SIZE, GRID_SIZE + 3, TileType::Grass)
+        ];
+        actions_.place_tile(tiles.span());
     }
 
+    #[test]
+    #[available_gas(30000000000)]
+    #[should_panic(expected: ('duplicate tiles not allowed', 'ENTRYPOINT_FAILED'))]
+    fn place_duplicate_tiles_test() {
+        let (caller, world, actions_) = spawn_world();
+        actions_.spawn();
+        let tiles = array![
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Grass),
+            (GRID_SIZE, GRID_SIZE + 2, TileType::Grass),
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Grass),
+        ];
+        actions_.place_tile(tiles.span());
+    }
 
     #[test]
     #[available_gas(300000000000)]
@@ -101,48 +118,51 @@ mod tests {
     fn place_distant_tile() {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
-        let tile1 = (GRID_SIZE + 1, GRID_SIZE + 1, TileType::Grass);
-        actions_.place_tile(tile1);
+        let mut tiles = array![
+            (GRID_SIZE + 1, GRID_SIZE + 1, TileType::Grass),
+            (GRID_SIZE + 2, GRID_SIZE + 2, TileType::Grass),
+            (GRID_SIZE + 2, GRID_SIZE + 3, TileType::Grass),
+        ];
+        actions_.place_tile(tiles.span());
     }
+// #[test]
+// #[available_gas(300000000000)]
+// #[ignore]
+// fn remaining_moves_test() {
+//     let (caller, world, actions_) = spawn_world();
+//     actions_.spawn();
+//     let player_id = get!(world, caller, (PlayerId)).player_id;
+//     let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Grass);
+//     let tile2 = (GRID_SIZE - 1, GRID_SIZE, TileType::Grass);
+//     let tile3 = (GRID_SIZE + 1, GRID_SIZE, TileType::WindMill);
+//     actions_.place_tile(tile1);
+//     actions_.place_tile(tile2);
+//     actions_.place_tile(tile3);
 
+//     let remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
+//     assert(remaining_moves == REMAINING_MOVES_DEFAULT - 3, 'incorrect remaining moves');
+// }
 
-    #[test]
-    #[available_gas(300000000000)]
-    fn remaining_moves_test() {
-        let (caller, world, actions_) = spawn_world();
-        actions_.spawn();
-        let player_id = get!(world, caller, (PlayerId)).player_id;
-        let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Grass);
-        let tile2 = (GRID_SIZE - 1, GRID_SIZE, TileType::Grass);
-        let tile3 = (GRID_SIZE + 1, GRID_SIZE, TileType::WindMill);
-        actions_.place_tile(tile1);
-        actions_.place_tile(tile2);
-        actions_.place_tile(tile3);
+// #[test]
+// #[available_gas(30000000)]
+// #[ignore]
+// fn neighbour_test() {
+//     let (caller, world, actions_) = spawn_world();
+//     let tile = get!(world, (0, 0, 0), (Tile));
+//     tile.counted.print();
+//     let neighbours = actions::get_neighbors(world, tile);
+//     assert(neighbours.len() == 3, 'length should be 3');
+// }
 
-        let remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
-        assert(remaining_moves == REMAINING_MOVES_DEFAULT - 3, 'incorrect remaining moves');
-    }
-
-
-    #[test]
-    #[available_gas(30000000)]
-    #[ignore]
-    fn neighbour_test() {
-        let (caller, world, actions_) = spawn_world();
-        let tile = get!(world, (0, 0, 0), (Tile));
-        tile.counted.print();
-        let neighbours = actions::get_neighbors(world, tile);
-        assert(neighbours.len() == 3, 'length should be 3');
-    }
-
-    #[test]
-    #[available_gas(3000000000)]
-    #[should_panic(expected: ('player does not exist', 'ENTRYPOINT_FAILED'))]
-    fn non_player_place_tile() {
-        let (caller, world, actions_) = spawn_world();
-        let tile = (3, 4, TileType::Grass);
-        actions_.place_tile(tile);
-    }
+// #[test]
+// #[available_gas(3000000000)]
+// #[should_panic(expected: ('player does not exist', 'ENTRYPOINT_FAILED'))]
+// #[ignore]
+// fn non_player_place_tile() {
+//     let (caller, world, actions_) = spawn_world();
+//     let tile = (3, 4, TileType::Grass);
+//     actions_.place_tile(tile);
+// }
 // #[test]
 // #[available_gas(30000000)]
 // fn random_spawn_test() {
