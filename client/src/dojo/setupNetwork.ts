@@ -51,6 +51,7 @@ export async function setupNetwork() {
             system: string,
             call_data: num.BigNumberish[]
         ) => {
+            // console.log("execute ", { contract, system, call_data });
             return provider.execute(signer, contract, system, call_data);
         },
     };

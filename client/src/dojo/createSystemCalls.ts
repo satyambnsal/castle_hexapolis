@@ -7,7 +7,7 @@ import { getEntityIdFromKeys } from "@dojoengine/utils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
-const ACTIONS_PATH = "actions";
+const ACTIONS_PATH = "castle_hexapolis::actions::actions";
 
 export function createSystemCalls(
     { execute }: SetupNetworkResult,

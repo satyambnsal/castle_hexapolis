@@ -44,16 +44,9 @@ export class MainScene extends Phaser.Scene {
     breakdownContainer: Phaser.GameObjects.Container | null = null;
     breakdownHexes: Hex[] = [];
     breakdownTexts: Phaser.GameObjects.BitmapText[] = [];
-    setupResult: SetupResult | null = null;
 
     constructor() {
         super("main");
-        this.setupNetwork();
-    }
-
-    async setupNetwork() {
-        const setupResult = await setup();
-        this.setupResult = setupResult;
     }
 
     create() {
@@ -209,19 +202,17 @@ export class MainScene extends Phaser.Scene {
     }
 
     async onPlaceTile(tiles: Tile[]) {
-        if (!this.setupResult?.systemCalls) {
-            try {
-                const setupResult = await setup();
-                this.setupResult = setupResult;
-            } catch (err) {
-                console.log("Failed to set system calls in main scene");
-            }
+        const setupResult = this.registry.get("setupResult");
+
+        if (!setupResult) {
+            alert("Failed to connect to katana network");
+            return;
         }
-        if (!this.setupResult) return;
+
         const {
             systemCalls: { place_tile },
             network: { account },
-        } = this.setupResult;
+        } = setupResult;
         console.log("===== # Place Tile #==== ", { account, tiles });
         place_tile({ signer: account, tiles });
     }
