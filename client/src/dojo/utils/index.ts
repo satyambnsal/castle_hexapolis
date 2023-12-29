@@ -5,25 +5,11 @@ export enum Direction {
     Down = 4,
 }
 
-export function updatePositionWithDirection(
-    direction: Direction,
-    value: { x: number; y: number }
-) {
-    switch (direction) {
-        case Direction.Left:
-            value.x--;
-            break;
-        case Direction.Right:
-            value.x++;
-            break;
-        case Direction.Up:
-            value.y--;
-            break;
-        case Direction.Down:
-            value.y++;
-            break;
-        default:
-            throw new Error("Invalid direction provided");
-    }
-    return value;
+export enum TileType {
+    Empty = 0,
+    WindMill = 1,
+    Grass = 2,
+    Street = 3,
+    Center = 4,
+    Port = 5,
 }

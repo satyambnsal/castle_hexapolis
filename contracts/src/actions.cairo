@@ -5,6 +5,7 @@
 
 #[dojo::contract]
 mod actions {
+    use core::array::SpanTrait;
     use core::option::OptionTrait;
     use core::array::ArrayTrait;
     use core::traits::Into;
@@ -56,9 +57,8 @@ mod actions {
             place_default_tiles(world, player_id);
         }
 
-        fn place_tile(self: @ContractState, tile1: (u8, u8, TileType)) {
+        fn place_tile(self: @ContractState, tiles: Span<(u8, u8, TileType)>) {
             let world = self.world_dispatcher.read();
-
             let player_address = get_caller_address();
             // Get player ID
             let player_id = get!(world, player_address, (PlayerId)).player_id;
@@ -67,24 +67,44 @@ mod actions {
 
             let mut remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
             assert(remaining_moves > 0, 'no moves left');
-            let (row_1, col_1, tile_type_1) = tile1;
+            assert(tiles.len() == 3, 'only three tiles can be placed');
 
-            // tile type validation
-            assert(
-                tile_type_1 == TileType::Grass
-                    || tile_type_1 == TileType::Street
-                    || tile_type_1 == TileType::WindMill,
-                'invalid tile type'
-            );
+            let tile1 = *tiles.at(0);
+            let tile2 = *tiles.at(1);
+            let tile3 = *tiles.at(2);
+            let (row_1, col_1, tile_type_1) = tile1;
+            let (row_2, col_2, tile_type_2) = tile2;
+            let (row_3, col_3, tile_type_3) = tile3;
+            'tiles coords'.print();
+            row_1.print();
+            col_1.print();
+            row_2.print();
+            col_2.print();
+            row_3.print();
+            col_3.print();
+            '------'.print();
+            // NOTE: We can refactor this code by using loop. for now lets keep it simple though.
+
+            assert(!(row_1 == row_2 && col_1 == col_2), 'duplicate tiles not allowed');
+            assert(!((row_2 == row_3) && (col_2 == col_3)), 'duplicate tiles not allowed');
+            assert(!((row_1 == row_3) && (col_1 == col_3)), 'duplicate tiles not allowed');
+
+            assert(validate_tile_type(tile_type_1), 'invalid tile1 type');
+            assert(validate_tile_type(tile_type_2), 'invalid tile2 type');
+            assert(validate_tile_type(tile_type_3), 'invalid tile3 type');
 
             // check if tile coordinates are within map boundry
-            assert(is_tile_in_boundry(row_1, col_1), 'invalid tile position');
+            assert(is_tile_in_boundry(row_1, col_1), 'invalid tile1 position');
+            assert(is_tile_in_boundry(row_2, col_2), 'invalid tile2 position');
+            assert(is_tile_in_boundry(row_3, col_3), 'invalid tile3 position');
 
             // check if tile is already occupied
-            assert(!is_tile_occupied(world, row_1, col_1, player_id), 'tile is already occupied');
+            assert(!is_tile_occupied(world, row_1, col_1, player_id), 'tile1 is already occupied');
+            assert(!is_tile_occupied(world, row_2, col_2, player_id), 'tile2 is already occupied');
+            assert(!is_tile_occupied(world, row_3, col_3, player_id), 'tile3 is already occupied');
 
             // check if neighbour tile is settled
-            let mut new_tile = Tile {
+            let mut new_tile_1 = Tile {
                 row: row_1,
                 col: col_1,
                 player_id,
@@ -92,14 +112,49 @@ mod actions {
                 counted: false,
                 is_hill: false
             };
-            assert(is_neighbor_settled(world, new_tile), 'neighbour is not settled');
+
+            let mut new_tile_2 = Tile {
+                row: row_2,
+                col: col_2,
+                player_id,
+                tile_type: tile_type_2,
+                counted: false,
+                is_hill: false
+            };
+
+            let mut new_tile_3 = Tile {
+                row: row_3,
+                col: col_3,
+                player_id,
+                tile_type: tile_type_3,
+                counted: false,
+                is_hill: false
+            };
+
+            // Check if at least one tile is close to a settled tile.
+
+            let is_settled_1 = is_neighbor_settled(world, new_tile_1);
+
+            let is_settled_2 = is_neighbor_settled(world, new_tile_2);
+
+            let is_settled_3 = is_neighbor_settled(world, new_tile_3);
+
+            assert(is_settled_1 || is_settled_2 || is_settled_3, 'neighbour is not settled');
 
             let mut player_score = get!(world, player_id, (Score)).score;
             let mut remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
 
-            set!(world, (new_tile));
-            player_score += calculate_score_for_tile(world, new_tile);
+            // Set all three tiles
+            set!(world, (new_tile_1));
+            set!(world, (new_tile_2));
+            set!(world, (new_tile_3));
+
+            player_score += calculate_score_for_tile(world, new_tile_1);
+            player_score += calculate_score_for_tile(world, new_tile_2);
+            player_score += calculate_score_for_tile(world, new_tile_3);
+
             remaining_moves -= 1;
+
             set_player_score_and_remaining_moves(world, player_id, player_score, remaining_moves);
         }
 
@@ -385,5 +440,11 @@ mod actions {
             // Implement logic for tiletype street and grass
             return 1;
         }
+    }
+
+    fn validate_tile_type(tile_type: TileType) -> bool {
+        tile_type == TileType::Grass
+            || tile_type == TileType::Street
+            || tile_type == TileType::WindMill
     }
 }

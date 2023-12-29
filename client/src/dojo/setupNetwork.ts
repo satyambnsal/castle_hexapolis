@@ -17,6 +17,13 @@ export async function setupNetwork() {
         VITE_PUBLIC_DEV,
     } = import.meta.env;
 
+    console.log("####### NETWORK DETAILS #######");
+    console.table({
+        worldAddress: VITE_PUBLIC_WORLD_ADDRESS,
+        nodeUrl: VITE_PUBLIC_NODE_URL,
+        toriiUrl: VITE_PUBLIC_TORII,
+    });
+
     const provider = new DojoProvider(
         VITE_PUBLIC_WORLD_ADDRESS,
         VITE_PUBLIC_DEV === "true" ? dev_manifest : prod_manifest,
@@ -32,26 +39,19 @@ export async function setupNetwork() {
     const { account, burnerManager } = await createBurner();
 
     return {
-        // dojo provider from core
         provider,
-
-        // recs world
         world,
-
         toriiClient,
         account,
         burnerManager,
-
-        // Define contract components for the world.
         contractComponents: defineContractComponents(world),
-
-        // Execute function.
         execute: async (
             signer: Account,
             contract: string,
             system: string,
             call_data: num.BigNumberish[]
         ) => {
+            // console.log("execute ", { contract, system, call_data });
             return provider.execute(signer, contract, system, call_data);
         },
     };

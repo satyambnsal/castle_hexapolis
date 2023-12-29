@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { BurnerManager } from "@dojoengine/create-burner";
 import { Account, RpcProvider } from "starknet";
 
@@ -20,6 +22,7 @@ export const createBurner = async () => {
 
     try {
         await burnerManager.create();
+        console.log("### BurnerManager created successfully!! ✅ ###");
     } catch (e) {
         console.log(e);
     }

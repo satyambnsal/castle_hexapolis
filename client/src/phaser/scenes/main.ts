@@ -1,3 +1,5 @@
+import { SetupResult, setup } from "../../dojo/setup";
+import { Tile } from "../../dojo/types";
 import {
     HexGrid,
     Trihex,
@@ -5,7 +7,7 @@ import {
     Hex,
     HEX_HEIGHT,
     HEX_WIDTH,
-} from "../hexGrid";
+} from "../hex-grid";
 import { Button, pick, shuffle } from "../util";
 
 export class MainScene extends Phaser.Scene {
@@ -194,9 +196,37 @@ export class MainScene extends Phaser.Scene {
     }
 
     onNewPoints(points: number, hexType: number) {
-        this.score += points;
-        this.scoreBreakdown[hexType] += points;
+        const setupResult = this.registry.get("setupResult");
+
+        if (!setupResult) {
+            alert("Failed to connect to katana network");
+            return;
+        }
+        const {
+            systemCalls: { fetch_score_and_remaining_moves },
+            network: { account },
+        } = setupResult;
+        const result = fetch_score_and_remaining_moves({ signer: account });
+        console.log("score result: ", result);
+
+        this.score = result?.score || 0;
+        this.scoreBreakdown[hexType] = result?.score || 0;
         this.scoreText?.setText(String(this.score) + " points");
+    }
+
+    async onPlaceTile(tiles: Tile[]) {
+        const setupResult = this.registry.get("setupResult");
+
+        if (!setupResult) {
+            alert("Failed to connect to katana network");
+            return;
+        }
+        const {
+            systemCalls: { place_tile },
+            network: { account },
+        } = setupResult;
+        console.log("===== # Place Tile #==== ", { account, tiles });
+        place_tile({ signer: account, tiles });
     }
 
     openHelp() {
@@ -585,7 +615,8 @@ export class MainScene extends Phaser.Scene {
             this.grid.placeTrihex(
                 this.previewX,
                 this.previewY,
-                this.nextTrihex as Trihex
+                this.nextTrihex as Trihex,
+                this.onPlaceTile.bind(this)
             )
         ) {
             this.pickNextTrihex();

@@ -1,5 +1,8 @@
-import { HexGrid } from "../hexGrid";
+import { getEntityIdFromKeys } from "@dojoengine/utils";
+import { SetupResult, setup } from "../../dojo/setup";
+import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
+import { Entity } from "@dojoengine/recs";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your town\noutward from the TOWN CENTER\n\n\nTry to get the highest score you can!",
@@ -18,10 +21,17 @@ export class MenuScene extends Phaser.Scene {
     tutorialText: Phaser.GameObjects.BitmapText | null = null;
     tutorialPage = 0;
     tutorialButton: Button | null = null;
+    // setupResult: SetupResult | null = null;
 
     constructor() {
         super("menu");
+        // this.setupNetwork();
     }
+
+    // async setupNetwork() {
+    //     const setupResult = await setup();
+    //     this.setupResult = setupResult;
+    // }
 
     create() {
         this.cameras.main.setBounds(-1280, 0, 3840, 720);
@@ -163,7 +173,29 @@ export class MenuScene extends Phaser.Scene {
         });
     }
 
-    play() {
+    async play() {
+        const setupResult: SetupResult = this.registry.get("setupResult");
+
+        if (!setupResult) {
+            alert("Failed to connect with katana network");
+            return;
+        }
+        // console.log("setup result", this.setupResult);
+        // // eslint-disable-next-line react-hooks/rules-of-hooks
+        const { network, systemCalls: { spawn } = {} } = setupResult;
+        const account = network?.account;
+
+        try {
+            spawn && (await spawn({ signer: account }));
+
+            const playerID = getEntityIdFromKeys([
+                BigInt(account.address ?? ""),
+            ]) as Entity;
+            console.log("=== player id ===", playerID);
+        } catch (err) {
+            console.log("Failed to call spawn", err);
+        }
+
         this.cameras.main.pan(-1280, 0, 500, "Linear", true);
 
         this.time.addEvent({

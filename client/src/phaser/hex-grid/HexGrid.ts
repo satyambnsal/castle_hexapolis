@@ -1,406 +1,9 @@
-import { Queue, Matrix2D } from "./util";
-
-export const shapes = {
-    a: [
-        { ro: 0, co: 0 },
-        { ro: 1, co: -1 },
-        { ro: 1, co: 0 },
-    ],
-    v: [
-        { ro: 0, co: 0 },
-        { ro: 0, co: 1 },
-        { ro: 1, co: 0 },
-    ],
-    "\\": [
-        { ro: -1, co: 0 },
-        { ro: 0, co: 0 },
-        { ro: 1, co: 0 },
-    ],
-    "-": [
-        { ro: 0, co: -1 },
-        { ro: 0, co: 0 },
-        { ro: 0, co: 1 },
-    ],
-    "/": [
-        { ro: -1, co: 1 },
-        { ro: 0, co: 0 },
-        { ro: 1, co: -1 },
-    ],
-    c: [
-        { ro: -1, co: 1 },
-        { ro: 0, co: 0 },
-        { ro: 1, co: 0 },
-    ],
-    r: [
-        { ro: 0, co: 1 },
-        { ro: 0, co: 0 },
-        { ro: 1, co: -1 },
-    ],
-    n: [
-        { ro: 0, co: -1 },
-        { ro: 0, co: 0 },
-        { ro: 1, co: 0 },
-    ],
-    d: [
-        { ro: -1, co: 0 },
-        { ro: 0, co: 0 },
-        { ro: 1, co: -1 },
-    ],
-    j: [
-        { ro: -1, co: 1 },
-        { ro: 0, co: 0 },
-        { ro: 0, co: -1 },
-    ],
-    l: [
-        { ro: -1, co: 0 },
-        { ro: 0, co: 0 },
-        { ro: 0, co: 1 },
-    ],
-};
-
-export const rotations = {
-    a: ["a", "v"],
-    v: ["a", "v"],
-    "\\": ["\\", "-", "/"],
-    "-": ["\\", "-", "/"],
-    "/": ["\\", "-", "/"],
-    c: ["c", "r", "n", "d", "j", "l"],
-    r: ["c", "r", "n", "d", "j", "l"],
-    n: ["c", "r", "n", "d", "j", "l"],
-    d: ["c", "r", "n", "d", "j", "l"],
-    j: ["c", "r", "n", "d", "j", "l"],
-    l: ["c", "r", "n", "d", "j", "l"],
-};
-
-export class Hex extends Phaser.GameObjects.Image {
-    row: number;
-    col: number;
-    hexType: number;
-    hasHill: boolean;
-
-    counted: boolean;
-    upgraded: boolean;
-
-    puffer: Phaser.GameObjects.Particles.ParticleEmitter;
-    // streets and ports are counted when they're connected to the center
-    // parks are counted in batches of 3, check when new ones are added to the group
-    // windmills are counted when placed; and can be uncounted if a new one is placed
-
-    eEdge: Phaser.GameObjects.Image;
-    neEdge: Phaser.GameObjects.Image;
-    nwEdge: Phaser.GameObjects.Image;
-    wEdge: Phaser.GameObjects.Image;
-    swEdge: Phaser.GameObjects.Image;
-    seEdge: Phaser.GameObjects.Image;
-    edges: Phaser.GameObjects.Group;
-    propeller: Phaser.GameObjects.Image;
-
-    constructor(
-        scene: Phaser.Scene,
-        x: number,
-        y: number,
-        row: number,
-        col: number,
-        particleManager?: Phaser.GameObjects.Particles.ParticleEmitter
-    ) {
-        super(scene, x, y, "empty");
-
-        this.setScale(0.5);
-        scene.add.existing(this);
-        // this.setTint(0xd6d1b1)
-        this.row = row;
-        this.col = col;
-        this.hexType = 0;
-        this.hasHill = false;
-        this.counted = false;
-        this.upgraded = false;
-
-        this.eEdge = scene.add.image(x, y, "edge-e");
-        this.neEdge = scene.add.image(x, y, "edge-ne");
-        this.nwEdge = scene.add.image(x, y, "edge-nw");
-        this.wEdge = scene.add.image(x, y, "edge-w");
-        this.swEdge = scene.add.image(x, y, "edge-sw");
-        this.seEdge = scene.add.image(x, y, "edge-se");
-        this.edges = scene.add.group([
-            this.eEdge,
-            this.neEdge,
-            this.nwEdge,
-            this.wEdge,
-            this.swEdge,
-            this.seEdge,
-        ]);
-        this.edges.setDepth(1);
-        this.edges.setAlpha(1);
-
-        this.eEdge.setScale(0.5);
-        this.neEdge.setScale(0.5);
-        this.nwEdge.setScale(0.5);
-        this.wEdge.setScale(0.5);
-        this.swEdge.setScale(0.5);
-        this.seEdge.setScale(0.5);
-
-        this.propeller = scene.add.image(x, y, "propeller");
-        this.propeller.setScale(0.5);
-        this.propeller.setVisible(false);
-        this.propeller.setDepth(2);
-
-        this.puffer = scene.add.particles("particle").createEmitter({
-            x: 0,
-            y: 0,
-            lifespan: 1000,
-            speed: { min: 3, max: 20 },
-            angle: { min: 0, max: 360 },
-            scale: 2,
-            quantity: 20,
-            alpha: { start: 1, end: 0 },
-            emitZone: {
-                type: "random",
-                source: new Phaser.Geom.Rectangle(-25, -25, 50, 50),
-                quantity: 20,
-            },
-        });
-        // this.puffer.setDepth(1);
-    }
-
-    puff() {
-        this.puffer.emitParticleAt(this.x, this.y, 10);
-    }
-
-    setX(x: number) {
-        super.setX(x);
-        this.eEdge.setX(x);
-        this.neEdge.setX(x);
-        this.nwEdge.setX(x);
-        this.wEdge.setX(x);
-        this.swEdge.setX(x);
-        this.seEdge.setX(x);
-        this.propeller.setX(x);
-        return this;
-    }
-
-    setY(y: number) {
-        super.setY(y);
-        this.eEdge.setY(y);
-        this.neEdge.setY(y);
-        this.nwEdge.setY(y);
-        this.wEdge.setY(y);
-        this.swEdge.setY(y);
-        this.seEdge.setY(y);
-        this.propeller.setY(y);
-        return this;
-    }
-
-    embiggen() {
-        this.eEdge.setScale(0.75);
-        this.neEdge.setScale(0.75);
-        this.nwEdge.setScale(0.75);
-        this.wEdge.setScale(0.75);
-        this.swEdge.setScale(0.75);
-        this.seEdge.setScale(0.75);
-        this.edges.setAlpha(1);
-        this.edges.setDepth(5);
-        this.propeller.setDepth(6);
-        this.propeller.setScale(0.75);
-        this.setScale(0.75);
-    }
-
-    setType(hexType: number) {
-        this.setTexture(
-            ["empty", "windmill", "grass", "street", "center", "port-bw"][
-                hexType
-            ]
-        );
-        this.hexType = hexType;
-        if (hexType === 1) {
-            this.propeller.setVisible(true);
-            if (this.hasHill) {
-                this.propeller.setY(this.y - 70 * this.scale);
-                this.setTexture("windmill-hill");
-            } else {
-                this.propeller.setY(this.y - 30 * this.scale);
-            }
-        } else {
-            this.propeller.setVisible(false);
-        }
-
-        if (hexType === 1) {
-            this.puffer.setTint(0xffffff);
-        } else if (hexType === 2) {
-            this.puffer.setTint(0x408a0f);
-        } else if (hexType === 3) {
-            this.puffer.setTint(0xae482c);
-        } else if (hexType === 5) {
-            this.puffer.setTint(0x3b80a6);
-        }
-
-        if (hexType === 5) {
-            this.eEdge.setVisible(false);
-            this.neEdge.setVisible(false);
-            this.seEdge.setVisible(false);
-            this.wEdge.setVisible(false);
-            this.nwEdge.setVisible(false);
-            this.swEdge.setVisible(false);
-        }
-    }
-
-    setHill(hasHill: boolean) {
-        this.hasHill = hasHill;
-        if (hasHill) this.setTexture("empty-hill");
-    }
-
-    upgrade() {
-        this.upgraded = true;
-        if (this.hexType === 2) {
-            this.setTexture("tree");
-        } else if (this.hexType === 3) {
-            this.setTexture("house");
-        } else if (this.hexType === 5) {
-            this.setTexture("port");
-        }
-    }
-
-    setSketchy(isSketchy: boolean) {
-        if (isSketchy) {
-            if (this.hexType === 0) {
-                this.setTexture("empty");
-            } else if (this.hexType === 1) {
-                if (this.hasHill) this.setTexture("windmill-hill-bw");
-                else this.setTexture("windmill-bw");
-                this.propeller.setVisible(false);
-            } else if (this.hexType === 2) {
-                if (this.upgraded) this.setTexture("tree-bw");
-                else this.setTexture("grass-bw");
-            } else if (this.hexType === 3) {
-                if (this.upgraded) this.setTexture("house-bw");
-                else this.setTexture("street-bw");
-            } else if (this.hexType === 4) {
-                this.setTexture("center-bw");
-            } else if (this.hexType === 5) {
-                this.setTexture("port-bw");
-            }
-        } else {
-            this.setAlpha(1);
-            if (this.hexType === 0) {
-                this.setTexture("empty");
-            } else if (this.hexType === 1) {
-                if (this.hasHill) this.setTexture("windmill-hill");
-                else this.setTexture("windmill");
-                this.propeller.setVisible(true);
-            } else if (this.hexType === 2) {
-                if (this.upgraded) this.setTexture("tree");
-                else this.setTexture("grass");
-            } else if (this.hexType === 3) {
-                if (this.upgraded) this.setTexture("house");
-                else this.setTexture("street");
-            } else if (this.hexType === 4) {
-                this.setTexture("center");
-            } else if (this.hexType === 5) {
-                if (this.upgraded) this.setTexture("port");
-                else this.setTexture("port-bw");
-            }
-        }
-    }
-
-    update(time: number, delta: number) {
-        if (this.propeller.visible) {
-            const speed =
-                this.hasHill && this.counted ? 2.2 : this.counted ? 1 : 0.1;
-            this.propeller.setAngle(this.propeller.angle + speed * 0.1 * delta);
-        }
-    }
-}
-
-export class Trihex {
-    hexes: number[];
-    shape: string;
-
-    constructor(color1: number, color2: number, color3: number, shape: string) {
-        this.hexes = [color1, color2, color3];
-        this.shape = shape;
-    }
-
-    rotateRight() {
-        if (this.shape === "a") {
-            this.shape = "v";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[1];
-            this.hexes[1] = temp;
-        } else if (this.shape === "v") {
-            this.shape = "a";
-            const temp = this.hexes[1];
-            this.hexes[1] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "\\") {
-            this.shape = "/";
-        } else if (this.shape === "/") {
-            this.shape = "-";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "-") {
-            this.shape = "\\";
-        } else if (this.shape === "c") {
-            this.shape = "r";
-        } else if (this.shape === "r") {
-            this.shape = "n";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "n") {
-            this.shape = "d";
-        } else if (this.shape === "d") {
-            this.shape = "j";
-        } else if (this.shape === "j") {
-            this.shape = "l";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "l") {
-            this.shape = "c";
-        }
-    }
-
-    rotateLeft() {
-        if (this.shape === "a") {
-            this.shape = "v";
-            const temp = this.hexes[1];
-            this.hexes[1] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "v") {
-            this.shape = "a";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[1];
-            this.hexes[1] = temp;
-        } else if (this.shape === "\\") {
-            this.shape = "-";
-        } else if (this.shape === "/") {
-            this.shape = "\\";
-        } else if (this.shape === "-") {
-            this.shape = "/";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "c") {
-            this.shape = "l";
-        } else if (this.shape === "r") {
-            this.shape = "c";
-        } else if (this.shape === "n") {
-            this.shape = "r";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[2];
-            this.hexes[2] = temp;
-        } else if (this.shape === "d") {
-            this.shape = "n";
-        } else if (this.shape === "j") {
-            this.shape = "d";
-        } else if (this.shape === "l") {
-            this.shape = "j";
-            const temp = this.hexes[0];
-            this.hexes[0] = this.hexes[2];
-            this.hexes[2] = temp;
-        }
-    }
-}
+import { Queue, Matrix2D } from "../util";
+import { rotations, shapes, HEX_HEIGHT, HEX_WIDTH } from "./constants";
+import { Trihex } from "./TriHex";
+import { Hex } from "./Hex";
+import { ScorePopper } from "./ScorePopper";
+import { Tile } from "../../dojo/types";
 
 export class HexGrid extends Phaser.GameObjects.Group {
     grid: Matrix2D<Hex>;
@@ -772,7 +375,12 @@ export class HexGrid extends Phaser.GameObjects.Group {
         }
     }
 
-    placeTrihex(x: number, y: number, trihex: Trihex): boolean {
+    placeTrihex(
+        x: number,
+        y: number,
+        trihex: Trihex,
+        onPlaceTile?: (tiles: Tile[]) => void
+    ): boolean {
         if (trihex.shape === "a") {
             y -= HEX_HEIGHT / 2;
         }
@@ -814,22 +422,23 @@ export class HexGrid extends Phaser.GameObjects.Group {
             hexes[2].hexType === 0
         ) {
             this.scene.sound.play("place");
-
+            // prepare data for network call
+            const tiles: Tile[] = [];
             for (let i = 0; i < 3; i++) {
                 hexes[i].setType(trihex.hexes[i]);
+                tiles.push({
+                    row: hexes[i].row,
+                    col: hexes[i].col,
+                    tile_type: trihex.hexes[i],
+                });
             }
 
             // calculate scores
             for (let i = 0; i < 3; i++) {
-                if (hexes[i].hexType === 1) {
-                    this.getPointsFor(hexes[i]);
-                }
+                this.getPointsFor(hexes[i]);
             }
-            for (let i = 0; i < 3; i++) {
-                if (hexes[i].hexType !== 1) {
-                    this.getPointsFor(hexes[i]);
-                }
-            }
+
+            onPlaceTile && onPlaceTile(tiles);
 
             this.updateEdges();
             return true;
@@ -837,8 +446,6 @@ export class HexGrid extends Phaser.GameObjects.Group {
             return false;
         }
     }
-
-    addHex(row: number, col: number, type: number) {}
 
     // returns connected hexes INCLUDING itself
     getConnected(hex: Hex): Hex[] {
@@ -975,9 +582,6 @@ export class HexGrid extends Phaser.GameObjects.Group {
     }
 }
 
-export const HEX_HEIGHT = 70;
-export const HEX_WIDTH = HEX_HEIGHT * 0.8660254;
-
 export function getY(row: number, col: number) {
     return 100 + row * HEX_HEIGHT * 0.75;
 }
@@ -994,47 +598,4 @@ export function getCol(x: number, y: number) {
     return Math.floor(
         (x + 50 + 0.5 * HEX_WIDTH) / HEX_WIDTH - 0.5 * getRow(x, y)
     );
-}
-
-export class ScorePopper extends Phaser.GameObjects.BitmapText {
-    points: number;
-    hexes: Hex[];
-
-    constructor(scene: Phaser.Scene, hexes: Hex[], points: number) {
-        // find avg position
-        let xSum = 0;
-        let ySum = 0;
-        for (const h of hexes) {
-            xSum += h.x;
-            ySum += h.y;
-        }
-
-        super(
-            scene,
-            xSum / hexes.length,
-            ySum / hexes.length,
-            "font",
-            points > 0 ? "+" + String(points) : String(points),
-            40
-        );
-        scene.add.existing(this);
-        this.points = points;
-        this.setScale(Math.max(1, 0.9 + 0.1 * points));
-        this.setAlpha(0);
-        this.setOrigin(0.5);
-        this.setDepth(5);
-        this.hexes = hexes;
-    }
-
-    pop() {
-        this.setAlpha(1);
-        this.scene.tweens.add({
-            targets: this,
-            props: {
-                alpha: 0,
-                y: this.y - HEX_HEIGHT * 2,
-            },
-            duration: 2000,
-        });
-    }
 }
