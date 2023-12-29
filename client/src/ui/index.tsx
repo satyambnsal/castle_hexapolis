@@ -1,5 +1,4 @@
 import { store } from "../store";
-import { EnergyLevels } from "./EnergyLevels";
 
 export const UI = () => {
     const layers = store((state) => {
@@ -11,9 +10,5 @@ export const UI = () => {
 
     if (!layers.networkLayer || !layers.phaserLayer) return <></>;
 
-    return (
-        <div className="absolute inset-0 pointer-events-none">
-            <EnergyLevels />
-        </div>
-    );
+    return <div className="absolute inset-0 pointer-events-none"></div>;
 };

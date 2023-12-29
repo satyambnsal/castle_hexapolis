@@ -196,8 +196,21 @@ export class MainScene extends Phaser.Scene {
     }
 
     onNewPoints(points: number, hexType: number) {
-        this.score += points;
-        this.scoreBreakdown[hexType] += points;
+        const setupResult = this.registry.get("setupResult");
+
+        if (!setupResult) {
+            alert("Failed to connect to katana network");
+            return;
+        }
+        const {
+            systemCalls: { fetch_score_and_remaining_moves },
+            network: { account },
+        } = setupResult;
+        const result = fetch_score_and_remaining_moves({ signer: account });
+        console.log("score result: ", result);
+
+        this.score = result?.score || 0;
+        this.scoreBreakdown[hexType] = result?.score || 0;
         this.scoreText?.setText(String(this.score) + " points");
     }
 
