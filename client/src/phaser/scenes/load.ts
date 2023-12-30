@@ -1,7 +1,4 @@
-import { SetupResult, setup } from "../../dojo/setup";
-
 export class LoadScene extends Phaser.Scene {
-    setupResult: SetupResult | null = null;
     constructor() {
         super("load");
     }
@@ -75,8 +72,6 @@ export class LoadScene extends Phaser.Scene {
     }
 
     async create() {
-        this.setupResult = await setup();
-        this.registry.set("setupResult", this.setupResult);
         this.scene.start("menu");
     }
 }

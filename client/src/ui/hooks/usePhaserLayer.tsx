@@ -3,8 +3,9 @@ import { createPhaserLayer } from "../../phaser";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 // import { phaserConfig } from "../../phaser/config/configurePhaser";
 import { usePromiseValue } from "./usePromiseValue";
+import Phaser from "phaser";
 
-import { config as phaserConfig } from "../../phaser/phaser-config";
+import { LoadScene, MainScene, MenuScene } from "../../phaser/scenes";
 
 type Props = {
     networkLayer: NetworkLayer | null;
@@ -35,7 +36,21 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
         return {
             container,
             phaserLayerPromise: createPhaserLayer(networkLayer, {
-                ...phaserConfig,
+                width: 1280,
+                height: 720,
+                parent: "hex-game",
+                type: Phaser.AUTO,
+                scene: [LoadScene, MenuScene, MainScene],
+                backgroundColor: "0xded6b6",
+                scale: {
+                    autoCenter: Phaser.Scale.CENTER_BOTH,
+                    mode: Phaser.Scale.FIT,
+                },
+                callbacks: {
+                    preBoot: (game) => {
+                        game.registry.set("networkLayer", networkLayer);
+                    },
+                },
             }),
         };
     }, [networkLayer]);

@@ -1,8 +1,8 @@
 import { getEntityIdFromKeys } from "@dojoengine/utils";
-import { SetupResult, setup } from "../../dojo/setup";
 import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
 import { Entity } from "@dojoengine/recs";
+import { NetworkLayer } from "../../dojo/createNetworkLayer";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your town\noutward from the TOWN CENTER\n\n\nTry to get the highest score you can!",
@@ -21,17 +21,10 @@ export class MenuScene extends Phaser.Scene {
     tutorialText: Phaser.GameObjects.BitmapText | null = null;
     tutorialPage = 0;
     tutorialButton: Button | null = null;
-    // setupResult: SetupResult | null = null;
 
     constructor() {
         super("menu");
-        // this.setupNetwork();
     }
-
-    // async setupNetwork() {
-    //     const setupResult = await setup();
-    //     this.setupResult = setupResult;
-    // }
 
     create() {
         this.cameras.main.setBounds(-1280, 0, 3840, 720);
@@ -174,15 +167,15 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        const setupResult: SetupResult = this.registry.get("setupResult");
+        const networkLayer: NetworkLayer = this.registry.get("networkLayer");
 
-        if (!setupResult) {
+        if (!networkLayer.account) {
             alert("Failed to connect with katana network");
             return;
         }
-        // console.log("setup result", this.setupResult);
+        // console.log("network layer", this.networkLayer);
         // // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { network, systemCalls: { spawn } = {} } = setupResult;
+        const { network, systemCalls: { spawn } = {} } = networkLayer;
         const account = network?.account;
 
         try {

@@ -1,4 +1,3 @@
-import { SetupResult, setup } from "../../dojo/setup";
 import { Tile } from "../../dojo/types";
 import {
     HexGrid,
@@ -196,16 +195,16 @@ export class MainScene extends Phaser.Scene {
     }
 
     onNewPoints(points: number, hexType: number) {
-        const setupResult = this.registry.get("setupResult");
+        const networkLayer = this.registry.get("networkLayer");
 
-        if (!setupResult) {
+        if (!networkLayer.account) {
             alert("Failed to connect to katana network");
             return;
         }
         const {
             systemCalls: { fetch_score_and_remaining_moves },
             network: { account },
-        } = setupResult;
+        } = networkLayer;
         const result = fetch_score_and_remaining_moves({ signer: account });
         console.log("score result: ", result);
 
@@ -215,16 +214,16 @@ export class MainScene extends Phaser.Scene {
     }
 
     async onPlaceTile(tiles: Tile[]) {
-        const setupResult = this.registry.get("setupResult");
+        const networkLayer = this.registry.get("networkLayer");
 
-        if (!setupResult) {
+        if (!networkLayer.account) {
             alert("Failed to connect to katana network");
             return;
         }
         const {
             systemCalls: { place_tile },
             network: { account },
-        } = setupResult;
+        } = networkLayer;
         console.log("===== # Place Tile #==== ", { account, tiles });
         place_tile({ signer: account, tiles });
     }
