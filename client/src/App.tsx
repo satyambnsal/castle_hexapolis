@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNetworkLayer } from "./ui/hooks/useNetworkLayer";
 import { PhaserLayer } from "./phaser/PhaserLayer";
 import { store } from "./store";
+import { NewGame } from "./ui/NewGame";
 // import { UI } from "./ui";
 // import { NewGame } from "./ui/NewGame";
 
@@ -24,9 +25,11 @@ function App() {
     return (
         <div className="w-full h-screen flex justify-center items-center bg-[#ded6b6]">
             {!networkLayer ? (
-                <div>Loading...</div>
-            ) : (
+                <div className="text-3xl">Loading...</div>
+            ) : true ? (
                 <PhaserLayer networkLayer={networkLayer} />
+            ) : (
+                <NewGame />
             )}
         </div>
     );

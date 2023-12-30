@@ -35,13 +35,23 @@ export class MenuScene extends Phaser.Scene {
 
         this.add.image(920, 360, "blue");
 
+        const realmImage = this.add.image(250, 90, "realms_logo_black");
+        realmImage.setScale(0.5);
         const title = this.add.bitmapText(
             50,
-            100,
+            150,
             "font",
             "Castle Hexapolis",
             70
         );
+        const tagline = this.add.bitmapText(
+            100,
+            220,
+            "font",
+            "A Strategic City-Development Game",
+            70
+        );
+        tagline.setScale(0.3);
 
         this.menu.add(title);
 

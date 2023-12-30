@@ -59,6 +59,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("play-button", "img/play-button.png");
         this.load.image("play-again-button", "img/play-again-button.png");
         this.load.image("how-to-play-button", "img/how-to-play-button.png");
+        this.load.image("realms_logo_black", "img/realms_logo_black.svg");
 
         this.load.bitmapFont("font", "font/font.png", "font/font.fnt");
         this.load.audio("ambience", "sfx/ambience.wav");
