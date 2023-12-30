@@ -39,9 +39,10 @@ export class MenuScene extends Phaser.Scene {
             50,
             100,
             "font",
-            "SIX-SIDED STREETS",
+            "Castle Hexapolis",
             70
         );
+
         this.menu.add(title);
 
         const playButton = new Button(

@@ -22,7 +22,7 @@ function App() {
 
     console.log(networkLayer, loggedIn);
     return (
-        <div className="w-full h-screen flex justify-center items-center">
+        <div className="w-full h-screen flex justify-center items-center bg-[#ded6b6]">
             {!networkLayer ? (
                 <div>Loading...</div>
             ) : (
