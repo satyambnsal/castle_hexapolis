@@ -23,14 +23,8 @@ function App() {
 
     console.log(networkLayer, loggedIn);
     return (
-        <div className="w-full h-screen flex justify-center items-center bg-[#ded6b6]">
-            {!networkLayer ? (
-                <div className="text-3xl">Loading...</div>
-            ) : true ? (
-                <PhaserLayer networkLayer={networkLayer} />
-            ) : (
-                <NewGame />
-            )}
+        <div className="w-full bg-[#ded6b6] h-screen">
+            <PhaserLayer networkLayer={networkLayer} />
         </div>
     );
 }

@@ -4,6 +4,7 @@ import { Button } from "../util";
 import { Entity } from "@dojoengine/recs";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import Phaser from "phaser";
+import { EVENTS } from "../constants";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your town\noutward from the TOWN CENTER\n\n\nTry to get the highest score you can!",
@@ -181,22 +182,15 @@ export class MenuScene extends Phaser.Scene {
     async play() {
         const networkLayer: NetworkLayer = this.registry.get("networkLayer");
 
-        if (!networkLayer.account) {
-            alert("Failed to connect with katana network");
-            return;
+        if (!networkLayer || !networkLayer.account) {
+            return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
         }
-        // console.log("network layer", this.networkLayer);
-        // // eslint-disable-next-line react-hooks/rules-of-hooks
+
         const { network, systemCalls: { spawn } = {} } = networkLayer;
         const account = network?.account;
 
         try {
             spawn && (await spawn({ signer: account }));
-
-            const playerID = getEntityIdFromKeys([
-                BigInt(account.address ?? ""),
-            ]) as Entity;
-            console.log("=== player id ===", playerID);
         } catch (err) {
             console.log("Failed to call spawn", err);
         }

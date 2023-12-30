@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { NetworkLayer } from "../dojo/createNetworkLayer";
 import { LoadScene, MainScene, MenuScene } from "./scenes";
+import clsx from "clsx";
+import { EVENTS } from "./constants";
 
 type Props = {
     networkLayer: NetworkLayer | null;
@@ -30,6 +32,9 @@ export const PhaserLayer = ({ networkLayer }: Props) => {
 
         const game = new Phaser.Game(config);
         game.events.on("gameIsReday", setReady);
+        game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
+            alert("Failed to connect with katan network");
+        });
         return () => {
             setReady(false);
             game.destroy(true);
@@ -40,8 +45,9 @@ export const PhaserLayer = ({ networkLayer }: Props) => {
     return (
         <div
             id="castle-hex"
-            className={isReady ? "visible" : "hidden"}
-            className="w-full h-full"
+            className={clsx("w-full h-full", {
+                hidden: !isReady,
+            })}
         />
     );
 };
