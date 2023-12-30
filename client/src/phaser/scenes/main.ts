@@ -8,6 +8,7 @@ import {
     HEX_WIDTH,
 } from "../hex-grid";
 import { Button, pick, shuffle } from "../util";
+import Phaser from "phaser";
 
 export class MainScene extends Phaser.Scene {
     grid: HexGrid | null = null;

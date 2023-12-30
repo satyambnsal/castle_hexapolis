@@ -3,6 +3,7 @@ import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
 import { Entity } from "@dojoengine/recs";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
+import Phaser from "phaser";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your town\noutward from the TOWN CENTER\n\n\nTry to get the highest score you can!",
