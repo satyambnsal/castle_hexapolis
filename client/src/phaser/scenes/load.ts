@@ -24,8 +24,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("street-bw", "img/street-bw.png");
         this.load.image("house", "img/house.png");
         this.load.image("house-bw", "img/house-bw.png");
-        this.load.image("center", "img/center.png");
-        this.load.image("center-bw", "img/center-bw.png");
+        this.load.image("center", "img/castle_2.png");
+        this.load.image("center-bw", "img/castle-bw_2.png");
         this.load.image("windmill", "img/windmill.png");
         this.load.image("propeller", "img/propeller.png");
         this.load.image("windmill-red", "img/windmill-red.png");
@@ -60,6 +60,10 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("play-again-button", "img/play-again-button.png");
         this.load.image("how-to-play-button", "img/how-to-play-button.png");
         this.load.image("realms_logo_black", "img/realms_logo_black.svg");
+
+        // New assets
+        // this.load.image("castle", "img/castle.png");
+        // this.load.image("castle-bw"), "img/castle-bw.png";
 
         this.load.bitmapFont("font", "font/font.png", "font/font.fnt");
         this.load.audio("ambience", "sfx/ambience.wav");

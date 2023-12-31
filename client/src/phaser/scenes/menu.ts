@@ -14,6 +14,19 @@ const tutorialTexts = [
     "Yep! To recap:\n- Streets want to connect Ports to\nthe Town Center\n- Wind Turbines want to be alone and\non Hills\n- Parks want to be grouped together\nin multiples of 3",
 ];
 
+// const gameJourneyTexts = [
+//     {
+//         heading: "Welcome, esteemed city planners and strategists!",
+//         description:
+//             "You have been summoned by the Lord of the Realm to the grand challenge of Castle Hexapolis, the digital realm where your urban planning skills and tactical acumen will be put to the test! This web-based browser game blends the charm of medieval citybuilding with the cerebral challenge of hexagonal tile placement. Prepare to embark on a journey of strategy, foresight, and creativity as you expand your city from a single Castle hex tile to a sprawling, interconnected metropolis.",
+//     },
+//     {
+//         heading: "Game Objective",
+//         description:
+//             "Your mission in Castle Hexapolis is straightforward yet captivating: skilfully expand your city outward from the central Castle tile, utilising a variety of hex tiles to maximize your points. With ROADS, WATCH TOWERS, and PARKS hex tiles at your disposal, every decision can tilt the balance of power in this dynamic cityscape.",
+//     },
+// ];
+
 const tutorialTypes = [[1, 2, 3, 4, 5], [3, 4, 5], [1], [2], [1, 2, 3, 4, 5]];
 
 export class MenuScene extends Phaser.Scene {
