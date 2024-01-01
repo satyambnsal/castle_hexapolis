@@ -1,17 +1,15 @@
-import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
-import { Entity } from "@dojoengine/recs";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import Phaser from "phaser";
 import { EVENTS } from "../constants";
 
 const tutorialTexts = [
-    "Place trios of hexes to grow your town\noutward from the TOWN CENTER\n\n\nTry to get the highest score you can!",
-    "STREET hexes are worth 1 point each\nif they're connected to the Town Center\n\nAdditionally, every PORT that you\nconnect to the Town Center with\nStreets is worth 3 points!",
-    "WIND TURBINES are worth 1 point if\nthey're not adjacent to any other\nWind Turbines\n\nIf they're also placed on a HILL,\nthey're worth 3 points!",
+    "Place trios of hexes to grow your city\noutward from the Castle\n\n\nTry to get the highest score you can!",
+    "STREET hexes are worth 1 point each\nif they're connected to the Castle\n\nAdditionally, every PORT that you\nconnect to the Castle with\nStreets is worth 3 points!",
+    "WATCH TOWERS are worth 1 point if\nthey're not adjacent to any other\nWatch Towers\n\nIf they're also placed on a HILL,\nthey're worth 3 points!",
     "Those are PARKS!\n\nEach group of connected Park hexes is\nworth 5 points for every 3 hexes in it",
-    "Yep! To recap:\n- Streets want to connect Ports to\nthe Town Center\n- Wind Turbines want to be alone and\non Hills\n- Parks want to be grouped together\nin multiples of 3",
+    "Yep! To recap:\n- Streets want to connect Ports to\nthe Castle\n- Watch Towers want to be alone and\non Hills\n- Parks want to be grouped together\nin multiples of 3",
 ];
 
 // const gameJourneyTexts = [
@@ -66,7 +64,6 @@ export class MenuScene extends Phaser.Scene {
             70
         );
         tagline.setScale(0.3);
-
         this.menu.add(title);
 
         const playButton = new Button(

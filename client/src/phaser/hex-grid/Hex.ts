@@ -8,9 +8,9 @@ export class Hex extends Phaser.GameObjects.Image {
     upgraded: boolean;
 
     puffer: Phaser.GameObjects.Particles.ParticleEmitter;
-    // streets and ports are counted when they're connected to the center
+    // streets and ports are counted when they're connected to the castle
     // parks are counted in batches of 3, check when new ones are added to the group
-    // windmills are counted when placed; and can be uncounted if a new one is placed
+    // watch towers are counted when placed; and can be uncounted if a new one is placed
 
     eEdge: Phaser.GameObjects.Image;
     neEdge: Phaser.GameObjects.Image;
