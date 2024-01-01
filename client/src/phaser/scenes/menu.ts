@@ -213,7 +213,9 @@ export class MenuScene extends Phaser.Scene {
                 const networkLayer = await setup();
                 this.registry.set("networkLayer", networkLayer);
             } catch (err) {
-                console.log("Failed to connect to network layer");
+                console.log(
+                    "Failed to connect to network layer. click on play button again!"
+                );
             }
         }
         console.log("network layer menu", networkLayer);
