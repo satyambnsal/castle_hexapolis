@@ -57,6 +57,9 @@ export class LoadScene extends Phaser.Scene {
             frameHeight: 91,
         });
 
+        this.load.image("watch_tower_3", "img/watch_tower_3.png");
+        this.load.image("next_arrow", "img/next_arrow.png");
+
         this.load.image("play-button", "img/play-button.png");
         this.load.image("play-again-button", "img/play-again-button.png");
         this.load.image("how-to-play-button", "img/how-to-play-button.png");

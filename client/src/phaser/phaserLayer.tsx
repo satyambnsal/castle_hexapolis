@@ -3,6 +3,7 @@ import { LoadScene, MainScene, MenuScene } from "./scenes";
 import clsx from "clsx";
 import { EVENTS } from "./constants";
 import { useNetworkLayer } from "../ui/hooks/useNetworkLayer";
+import { setup } from "../dojo/setup";
 
 export const PhaserLayer = () => {
     const networkLayer = useNetworkLayer();
@@ -21,9 +22,23 @@ export const PhaserLayer = () => {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 mode: Phaser.Scale.FIT,
             },
+            callbacks: {
+                postBoot: async (game) => {
+                    try {
+                        const networkLayer = await setup();
+                        game.registry.set("networkLayer", networkLayer);
+                        console.log("setting in postboot", networkLayer);
+                    } catch (err) {
+                        console.log(
+                            `Failed to setup network layer in main -> create`
+                        );
+                    }
+                },
+            },
         };
 
         const game = new Phaser.Game(config);
+        
         game.events.on("gameIsReday", setReady);
         game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
             alert("Failed to connect with katana network");

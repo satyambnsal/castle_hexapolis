@@ -197,19 +197,10 @@ export class MainScene extends Phaser.Scene {
         );
 
         this.input.on("wheel", this.onMouseWheel, this);
-        let networkLayer: SetupResult = this.registry.get("networkLayer");
-
-        if (!networkLayer) {
-            try {
-                networkLayer = await setup();
-            } catch (err) {
-                console.log(`Failed to setup network layer in main -> create`);
-            }
-        }
     }
 
     onNewPoints(points: number, hexType: number) {
-        const networkLayer = this.game.registry.get("networkLayer");
+        const networkLayer = this.registry.get("networkLayer");
 
         if (!networkLayer?.network?.account) {
             alert("Failed to connect to katana network");
@@ -228,7 +219,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     async onPlaceTile(tiles: Tile[]) {
-        const networkLayer = this.game.registry.get("networkLayer");
+        const networkLayer = this.registry.get("networkLayer");
 
         if (!networkLayer?.network?.account) {
             alert("Failed to connect to katana network");
