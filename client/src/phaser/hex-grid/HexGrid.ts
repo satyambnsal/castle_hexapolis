@@ -359,7 +359,7 @@ export class HexGrid extends Phaser.GameObjects.Group {
         ) {
             for (let i = 0; i < 3; i++) {
                 this.triPreviews[i].setTexture(
-                    ["white", "windmill-bw", "grass-bw", "street-bw"][
+                    ["white", "watchtower-bw", "grass-bw", "street-bw"][
                         trihex.hexes[i]
                     ]
                 );
@@ -367,7 +367,7 @@ export class HexGrid extends Phaser.GameObjects.Group {
         } else {
             for (let i = 0; i < 3; i++) {
                 this.triPreviews[i].setTexture(
-                    ["white", "windmill-red", "grass-red", "street-red"][
+                    ["white", "watchtower-red", "grass-red", "street-red"][
                         trihex.hexes[i]
                     ]
                 );
@@ -566,9 +566,11 @@ export class HexGrid extends Phaser.GameObjects.Group {
                 }
                 if (p.hexes[0].hexType === 1) {
                     if (p.hexes[0].hasHill) {
-                        this.scene.sound.play("windmill-hill", { volume: 0.6 });
+                        this.scene.sound.play("watchtower-hill", {
+                            volume: 0.6,
+                        });
                     } else {
-                        this.scene.sound.play("windmill", { volume: 0.6 });
+                        this.scene.sound.play("watchtower", { volume: 0.6 });
                     }
                 }
                 if (p.hexes[0].hexType === 5) {

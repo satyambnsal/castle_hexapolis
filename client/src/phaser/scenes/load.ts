@@ -27,12 +27,12 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("house-bw", "img/house-bw.png");
         this.load.image("center", "img/castle_2.png");
         this.load.image("center-bw", "img/castle-bw_2.png");
-        this.load.image("windmill", "img_2/watchtower_Lvl1.png");
+        this.load.image("watchtower", "img_2/watchtower_Lvl1.png");
         this.load.image("propeller", "img/propeller.png");
-        this.load.image("windmill-red", "img_2/watchtower_Lvl1_red.png");
-        this.load.image("windmill-hill", "img_2/watchtower_Lvl2.png");
-        this.load.image("windmill-bw", "img_2/watchtower_Lvl1-bw.png");
-        this.load.image("windmill-hill-bw", "img_2/watchtower_Lvl2-bw.png");
+        this.load.image("watchtower-red", "img_2/watchtower_Lvl1_red.png");
+        this.load.image("watchtower-hill", "img_2/watchtower_Lvl2.png");
+        this.load.image("watchtower-bw", "img_2/watchtower_Lvl1-bw.png");
+        this.load.image("watchtower-hill-bw", "img_2/watchtower_Lvl2-bw.png");
         this.load.image("port-bw", "img/port.png");
         this.load.spritesheet("port", "img/port-color.png", {
             frameWidth: 140,
@@ -72,8 +72,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio("pop", "sfx/pop.wav");
         this.load.audio("place", "sfx/place.wav");
         this.load.audio("tree", "sfx/tree.wav");
-        this.load.audio("windmill", "sfx/windmill.wav");
-        this.load.audio("windmill-hill", "sfx/windmill-hill.wav");
+        this.load.audio("watchtower", "sfx/windmill.wav");
+        this.load.audio("watchtower-hill", "sfx/windmill-hill.wav");
         this.load.audio("port", "sfx/port.wav");
         this.load.audio("splash", "sfx/splash.wav");
         this.load.audio("click", "sfx/click.wav");

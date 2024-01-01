@@ -7,9 +7,9 @@ export enum Direction {
 
 export enum TileType {
     Empty = 0,
-    WindMill = 1,
-    Grass = 2,
-    Street = 3,
-    Center = 4,
-    Port = 5,
+    WatchTower = 1,
+    Park = 2,
+    Roard = 3,
+    Castle = 4,
+    CityGate = 5,
 }
