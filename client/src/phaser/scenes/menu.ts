@@ -193,8 +193,9 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        const networkLayer: NetworkLayer = this.registry.get("networkLayer");
-
+        const networkLayer: NetworkLayer =
+            this.game.registry.get("networkLayer");
+        // console.log("network layer", networkLayer);
         if (!networkLayer || !networkLayer.account) {
             return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
         }

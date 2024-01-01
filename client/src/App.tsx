@@ -1,14 +1,34 @@
 import { useEffect } from "react";
 import { useNetworkLayer } from "./ui/hooks/useNetworkLayer";
-import { PhaserLayer } from "./phaser/PhaserLayer";
+import { PhaserLayer } from "./phaser/phaserLayer";
 import { store } from "./store";
-import { NewGame } from "./ui/NewGame";
-// import { UI } from "./ui";
-// import { NewGame } from "./ui/NewGame";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { NavBar } from "./ui/components/NavBar";
+import { AboutGame } from "./ui/components/About";
+import { Leaderboard } from "./ui/components/Leaderboard";
+import { Settings } from "./ui/components/Settings";
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <PhaserLayer />,
+    },
+    {
+        path: "/about",
+        element: <AboutGame />,
+    },
+    {
+        path: "/leaderboard",
+        element: <Leaderboard />,
+    },
+    {
+        path: "/settings",
+        element: <Settings />,
+    },
+]);
 
 function App() {
     const networkLayer = useNetworkLayer();
-    const { loggedIn, username } = store();
 
     useEffect(() => {
         if (!networkLayer || !networkLayer.account) return;
@@ -21,10 +41,10 @@ function App() {
         // Handle Lord Faucet thing here.
     }, [networkLayer]);
 
-    console.log(networkLayer, loggedIn);
     return (
-        <div className="w-full bg-[#ded6b6] h-screen">
-            <PhaserLayer networkLayer={networkLayer} />
+        <div className=" bg-[#ded6b6] mb-0">
+            <NavBar />
+            <RouterProvider router={router} />
         </div>
     );
 }

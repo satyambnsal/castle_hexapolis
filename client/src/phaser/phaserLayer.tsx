@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
-import { NetworkLayer } from "../dojo/createNetworkLayer";
 import { LoadScene, MainScene, MenuScene } from "./scenes";
 import clsx from "clsx";
 import { EVENTS } from "./constants";
+import { useNetworkLayer } from "../ui/hooks/useNetworkLayer";
 
-type Props = {
-    networkLayer: NetworkLayer | null;
-};
-
-export const PhaserLayer = ({ networkLayer }: Props) => {
+export const PhaserLayer = () => {
+    const networkLayer = useNetworkLayer();
     const [isReady, setReady] = useState(false);
+    const [game, setGame] = useState<Phaser.Game | null>();
 
     useEffect(() => {
         const config: Phaser.Types.Core.GameConfig = {
             width: 1280,
-            height: 720,
+            height: "100%",
             parent: "castle-hex",
             type: Phaser.AUTO,
             scene: [LoadScene, MenuScene, MainScene],
@@ -23,11 +21,6 @@ export const PhaserLayer = ({ networkLayer }: Props) => {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 mode: Phaser.Scale.FIT,
             },
-            callbacks: {
-                preBoot: (game) => {
-                    game.registry.set("networkLayer", networkLayer);
-                },
-            },
         };
 
         const game = new Phaser.Game(config);
@@ -35,17 +28,25 @@ export const PhaserLayer = ({ networkLayer }: Props) => {
         game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
             alert("Failed to connect with katan network");
         });
+        setGame(game);
         return () => {
             setReady(false);
             game.destroy(true);
         };
     }, []);
+
+    useEffect(() => {
+        if (networkLayer && game) {
+            game.registry.set("networkLayer", networkLayer);
+        }
+    }, [networkLayer, game]);
+
     if (!networkLayer) return null;
 
     return (
         <div
             id="castle-hex"
-            className={clsx("w-full h-full", {
+            className={clsx("bg-red", {
                 hidden: !isReady,
             })}
         />
