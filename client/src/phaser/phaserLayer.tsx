@@ -35,12 +35,6 @@ export const PhaserLayer = () => {
         };
     }, []);
 
-    useEffect(() => {
-        if (networkLayer && game) {
-            game.registry.set("networkLayer", networkLayer);
-        }
-    }, [networkLayer, game]);
-
     if (!networkLayer) return null;
 
     return (

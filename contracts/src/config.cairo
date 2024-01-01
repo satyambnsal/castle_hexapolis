@@ -3,4 +3,4 @@
 // ----------------------------------------------------------------------------
 
 const GRID_SIZE: u8 = 5;
-const REMAINING_MOVES_DEFAULT: u8 = 25;
+const REMAINING_MOVES_DEFAULT: u8 = 24;

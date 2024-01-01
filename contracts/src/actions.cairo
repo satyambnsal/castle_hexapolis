@@ -301,7 +301,7 @@ mod actions {
             // 'neighbour y'.print();
             // current_neighbour.col.print();
             if ((current_neighbour.tile_type != TileType::Empty)
-                && current_neighbour.tile_type != TileType::Port) {
+                && current_neighbour.tile_type != TileType::CityGate) {
                 break true;
             }
         }
@@ -314,7 +314,7 @@ mod actions {
                 player_id,
                 row: GRID_SIZE,
                 col: GRID_SIZE,
-                tile_type: TileType::Center,
+                tile_type: TileType::Castle,
                 counted: false,
                 is_hill: false
             })
@@ -325,7 +325,7 @@ mod actions {
                 player_id,
                 row: 0,
                 col: GRID_SIZE,
-                tile_type: TileType::Port,
+                tile_type: TileType::CityGate,
                 counted: false,
                 is_hill: false
             })
@@ -336,7 +336,7 @@ mod actions {
                 player_id,
                 row: 0,
                 col: GRID_SIZE * 2,
-                tile_type: TileType::Port,
+                tile_type: TileType::CityGate,
                 counted: false,
                 is_hill: false
             })
@@ -347,7 +347,7 @@ mod actions {
                 player_id,
                 row: GRID_SIZE,
                 col: 0,
-                tile_type: TileType::Port,
+                tile_type: TileType::CityGate,
                 counted: false,
                 is_hill: false
             })
@@ -358,7 +358,7 @@ mod actions {
                 player_id,
                 row: GRID_SIZE,
                 col: GRID_SIZE * 2,
-                tile_type: TileType::Port,
+                tile_type: TileType::CityGate,
                 counted: false,
                 is_hill: false
             })
@@ -369,7 +369,7 @@ mod actions {
                 player_id,
                 row: GRID_SIZE * 2,
                 col: 0,
-                tile_type: TileType::Port,
+                tile_type: TileType::CityGate,
                 counted: false,
                 is_hill: false
             })
@@ -380,7 +380,7 @@ mod actions {
                 player_id,
                 row: GRID_SIZE * 2,
                 col: GRID_SIZE,
-                tile_type: TileType::Port,
+                tile_type: TileType::CityGate,
                 counted: false,
                 is_hill: false
             })
@@ -392,7 +392,7 @@ mod actions {
             return 0;
         }
 
-        if (tile.tile_type == TileType::WindMill) {
+        if (tile.tile_type == TileType::WatchTower) {
             let mut isolated = true;
             let mut score = 0;
 
@@ -404,7 +404,7 @@ mod actions {
                 }
 
                 let current_neighbour = neighbors.pop_front().unwrap();
-                if (current_neighbour.tile_type == TileType::WindMill) {
+                if (current_neighbour.tile_type == TileType::WatchTower) {
                     isolated = false;
                     if (current_neighbour.counted) {
                         set!(
@@ -437,14 +437,14 @@ mod actions {
 
             return score;
         } else {
-            // Implement logic for tiletype street and grass
+            // Implement logic for tiletype road and park
             return 1;
         }
     }
 
     fn validate_tile_type(tile_type: TileType) -> bool {
-        tile_type == TileType::Grass
-            || tile_type == TileType::Street
-            || tile_type == TileType::WindMill
+        tile_type == TileType::Park
+            || tile_type == TileType::Road
+            || tile_type == TileType::WatchTower
     }
 }
