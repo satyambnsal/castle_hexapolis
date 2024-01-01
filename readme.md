@@ -3,6 +3,11 @@
 
 ## Overview
 
+[View the Guide](/client/public/castle_hexapolis.pdf)
+
+
+
+
 
 
 ## How to run client
@@ -65,24 +70,3 @@ slot deployments create emoji-man-demo torii --rpc https://api.cartridge.gg/x/em
 # Update authentication for the release
 ./scripts/default_auth.sh release
 ```
-
-### Step 11:
-
-Deploy to vercel.
-
-## Next Steps
-
-### Bonus 1: Add a collectables
-
-- Add a way to spawn collectables on the map and allow players to collect them
-
-### Bonus 2: Leaderboard
-
-- Add UI in client to show total amount of killed types.
-
-
-
-
-## Action Items
-
-- [] Implement the randomness. it takes 3 values from this array [1,1,1,2,2,2,3,3,3]
