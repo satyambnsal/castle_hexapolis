@@ -4,31 +4,18 @@ import { defineComponent, Type as RecsType, World } from "@dojoengine/recs";
 
 export function defineContractComponents(world: World) {
     return {
-        Energy: (() => {
-            return defineComponent(
-                world,
-                { id: RecsType.Number, amt: RecsType.Number },
-                {
-                    metadata: {
-                        name: "Energy",
-                        types: ["u8", "u8"],
-                        customTypes: [],
-                    },
-                }
-            );
-        })(),
         GameData: (() => {
             return defineComponent(
                 world,
                 {
                     game: RecsType.BigInt,
-                    number_of_players: RecsType.Number,
+                    number_of_players: RecsType.BigInt,
                     available_ids: RecsType.BigInt,
                 },
                 {
                     metadata: {
                         name: "GameData",
-                        types: ["felt252", "u8", "u256"],
+                        types: ["felt252", "u128", "u128"],
                         customTypes: [],
                     },
                 }
@@ -37,64 +24,71 @@ export function defineContractComponents(world: World) {
         PlayerAddress: (() => {
             return defineComponent(
                 world,
-                { id: RecsType.Number, player: RecsType.BigInt },
+                { player_id: RecsType.BigInt, player_address: RecsType.BigInt },
                 {
                     metadata: {
                         name: "PlayerAddress",
-                        types: ["u8", "contractaddress"],
+                        types: ["u128", "contractaddress"],
                         customTypes: [],
                     },
                 }
             );
         })(),
-        PlayerAtPosition: (() => {
+        PlayerId: (() => {
             return defineComponent(
                 world,
-                { x: RecsType.Number, y: RecsType.Number, id: RecsType.Number },
+                { player_address: RecsType.BigInt, player_id: RecsType.BigInt },
                 {
                     metadata: {
-                        name: "PlayerAtPosition",
-                        types: ["u8", "u8", "u8"],
+                        name: "PlayerId",
+                        types: ["contractaddress", "u128"],
                         customTypes: [],
                     },
                 }
             );
         })(),
-        PlayerID: (() => {
+        RemainingMoves: (() => {
             return defineComponent(
                 world,
-                { player: RecsType.BigInt, id: RecsType.Number },
+                { player_id: RecsType.BigInt, moves: RecsType.Number },
                 {
                     metadata: {
-                        name: "PlayerID",
-                        types: ["contractaddress", "u8"],
+                        name: "RemainingMoves",
+                        types: ["u128", "u8"],
                         customTypes: [],
                     },
                 }
             );
         })(),
-        Position: (() => {
+        Score: (() => {
             return defineComponent(
                 world,
-                { id: RecsType.Number, x: RecsType.Number, y: RecsType.Number },
+                { player_id: RecsType.BigInt, score: RecsType.Number },
                 {
                     metadata: {
-                        name: "Position",
-                        types: ["u8", "u8", "u8"],
+                        name: "Score",
+                        types: ["u128", "u8"],
                         customTypes: [],
                     },
                 }
             );
         })(),
-        RPSType: (() => {
+        Tile: (() => {
             return defineComponent(
                 world,
-                { id: RecsType.Number, rps: RecsType.Number },
+                {
+                    row: RecsType.Number,
+                    col: RecsType.Number,
+                    player_id: RecsType.BigInt,
+                    tile_type: RecsType.Number,
+                    counted: RecsType.Boolean,
+                    is_hill: RecsType.Boolean,
+                },
                 {
                     metadata: {
-                        name: "RPSType",
-                        types: ["u8", "u8"],
-                        customTypes: [],
+                        name: "Tile",
+                        types: ["u8", "u8", "u128", "enum", "bool", "bool"],
+                        customTypes: ["TileType"],
                     },
                 }
             );

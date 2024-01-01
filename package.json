@@ -1,0 +1,13 @@
+{
+  "name": "castle_hexapolis",
+  "version": "0.1.0",
+  "workspaces": [
+    "client"
+  ],
+  "author": {
+    "name": "Satyam Bansal"
+  },
+  "scripts": {
+    "build-client": "bun run --cwd ./client build"
+  }
+}

@@ -1,6 +1,6 @@
 [package]
 cairo-version = "2.4.0"
-name = "emojiman"
+name = "castle_hexapolis"
 version = "0.1.0"
 
 [cairo]
@@ -17,7 +17,7 @@ initializer_class_hash = "0xbeef"
 
 [tool.dojo.env]
 # Default account for katana with seed = 0
-rpc_url = "http://localhost:5051/"
+rpc_url = "http://localhost:5050/"
 account_address = "0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973"
 private_key = "0x1800000000300000180000000000030000000000003006001800006600"
 

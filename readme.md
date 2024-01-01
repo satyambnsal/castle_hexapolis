@@ -1,109 +1,32 @@
 
-# Dozo App
+# Castle Hexapolis
 
 ## Overview
-Figma Link:
-https://www.figma.com/team_invite/redeem/vHpcgm1U0vXa47JqhZ05Hg
 
-## Resources
+[View the Guide](/client/public/castle_hexapolis.pdf)
 
-- [Dojo Book](https://book.dojoengine.org/)
-- [Cairo Book](https://github.com/cairo-book/cairo-book.github.io/)
-- [Dojo Engine Discord](https://discord.gg/dojoengine)
-- [Awesome Dojo](https://github.com/dojoengine/awesome-dojo)
 
-## Getting Started with the Demo
 
-### Prerequisites
 
-To begin, install Dojo using the following command:
 
-```bash
-curl -L https://install.dojoengine.org | bash
+
+## How to run client
+We are going to use `bun` as a package manager. you can use `npm` or `yarn ` as well.
+
+```
+cd client
 ```
 
-After installation, run this command to set up:
-
-```bash
-dojoup
+```
+bun install
 ```
 
-This will install the latest stable release of the Dojo tool suite, currently version [`v0.3.15`](https://github.com/dojoengine/dojo/releases/tag/v0.3.10).
-
-### Optional: Starter Project
-
-For a foundational start, clone the Dojo starter project:
-
-```bash
-git clone https://github.com/dojoengine/dojo-starter
+```
+bun run dev
 ```
 
-### Step 1: Initialize the Main Project
 
-Clone the Emoji Man project:
 
-```bash
-git clone https://github.com/dojoengine/emoji-man
-```
-
-The initial steps include:
-
-- a. Project initialization
-- b. Exploring the project structure
-- c. Understanding Scarb
-- d. Introduction to Cairo
-
-### Step 2: Creating Your First Model
-
-Develop your first model by:
-
-- a. Conceptualizing the model structure
-- b. Creating a model and understanding state structures, with insights on [ECS](https://github.com/SanderMertens/ecs-faq)
-- c. Learning how Dojo is not purely ECS-based
-
-### Step 3: Implementing Your First System
-
-This involves:
-
-- a. System creation as a contract
-- b. Adding a new system
-- c. Building and testing with `sozo`
-
-### Step 4: Integrating a New Model into a System
-
-Proceed by:
-
-- a. Adding a new model
-- b. Implementing a new trait
-- c. Utilizing the trait in a system
-- d. Building and verifying the integration
-
-### Step 5: Exploring Sozo and the CLI
-
-Delve deeper into:
-
-- a. `sozo` functionalities
-- b. Launching `katana`
-- c. Setting up `torii` and connecting to your World
-
-Refer to the documentation for [`sozo`](https://book.dojoengine.org/toolchain/sozo/reference.html), [`katana`](https://book.dojoengine.org/toolchain/katana/reference.html), and [`torii`](https://book.dojoengine.org/toolchain/torii/reference.html).
-
-### Step 6: Code Cleanup
-
-Focus on:
-
-- a. Refining and organizing the code
-
-### Step 7: Testing
-
-Conduct tests by:
-
-- a. Establishing a testing structure
-- b. Writing and executing World deployment tests
-
-### Step 8: Deploying to Katana
-
-Learn about:
 
 - a. Deployment processes and debugging techniques
 
@@ -147,17 +70,3 @@ slot deployments create emoji-man-demo torii --rpc https://api.cartridge.gg/x/em
 # Update authentication for the release
 ./scripts/default_auth.sh release
 ```
-
-### Step 11:
-
-Deploy to vercel.
-
-## Next Steps
-
-### Bonus 1: Add a collectables
-
-- Add a way to spawn collectables on the map and allow players to collect them
-
-### Bonus 2: Leaderboard
-
-- Add UI in client to show total amount of killed types.

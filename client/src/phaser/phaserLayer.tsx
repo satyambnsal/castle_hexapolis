@@ -1,34 +1,48 @@
-import { useEffect } from "react";
-import { NetworkLayer } from "../dojo/createNetworkLayer";
-import { store, useUIStore } from "../store";
-import { usePhaserLayer } from "../ui/hooks/usePhaserLayer";
+import { useEffect, useState } from "react";
+import { LoadScene, MainScene, MenuScene } from "./scenes";
+import clsx from "clsx";
+import { EVENTS } from "./constants";
+import { useNetworkLayer } from "../ui/hooks/useNetworkLayer";
 
-type Props = {
-    networkLayer: NetworkLayer | null;
-};
-
-export const PhaserLayer = ({ networkLayer }: Props) => {
-    const loggedIn = useUIStore((state: any) => state.loggedIn);
-    const { phaserLayer, ref } = usePhaserLayer({ networkLayer });
+export const PhaserLayer = () => {
+    const networkLayer = useNetworkLayer();
+    const [isReady, setReady] = useState(false);
+    const [game, setGame] = useState<Phaser.Game | null>();
 
     useEffect(() => {
-        if (phaserLayer) {
-            store.setState({ phaserLayer });
+        const config: Phaser.Types.Core.GameConfig = {
+            width: 1280,
+            height: "100%",
+            parent: "castle-hex",
+            type: Phaser.AUTO,
+            scene: [LoadScene, MenuScene, MainScene],
+            backgroundColor: "0xded6b6",
+            scale: {
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+                mode: Phaser.Scale.FIT,
+            },
+        };
 
-            console.log("Setting phaser layer");
-        }
-    }, [phaserLayer, loggedIn]);
+        const game = new Phaser.Game(config);
+        game.events.on("gameIsReday", setReady);
+        game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
+            alert("Failed to connect with katana network");
+        });
+        setGame(game);
+        return () => {
+            setReady(false);
+            game.destroy(true);
+        };
+    }, []);
+
+    if (!networkLayer) return null;
 
     return (
         <div
-            ref={ref}
-            style={{
-                position: "absolute",
-                top: "0",
-                left: "0",
-                width: "100%",
-                height: "100%",
-            }}
+            id="castle-hex"
+            className={clsx("bg-red", {
+                hidden: !isReady,
+            })}
         />
     );
 };

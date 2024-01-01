@@ -8,24 +8,24 @@ mode=${1:-dev} # default to 'dev' if no argument is provided
 # Use different manifest file based on the mode
 if [ "$mode" = "release" ]; then
     manifest_file="./target/release/manifest.json"
-    export RPC_URL="https://api.cartridge.gg/x/emoji-man-demo/katana";
+    export RPC_URL="https://api.cartridge.gg/x/emoji-man-demo/katana"
 else
     manifest_file="./target/dev/manifest.json"
-    export RPC_URL="http://localhost:5050";
+    export RPC_URL="http://localhost:5050"
 fi
 
 export WORLD_ADDRESS=$(cat $manifest_file | jq -r '.world.address')
 
-export ACTIONS_ADDRESS=$(cat $manifest_file | jq -r '.contracts[] | select(.name == "emojiman::actions::actions" ).address')
+export ACTIONS_ADDRESS=$(cat $manifest_file | jq -r '.contracts[] | select(.name == "castle_hexapolis::actions::actions" ).address')
 
 echo "---------------------------------------------------------------------------"
-echo world : $WORLD_ADDRESS 
+echo world : $WORLD_ADDRESS
 echo " "
 echo actions : $ACTIONS_ADDRESS
 echo "---------------------------------------------------------------------------"
 
 # enable system -> component authorizations
-COMPONENTS=("Position" "MovesQueue" "RPSType" "GameData" "PlayerID" "Energy" "PlayerAddress" "PlayerAtPosition" )
+COMPONENTS=("Tile" "PlayerId" "PlayerAddress" "Score" "RemainingMoves" "GameData")
 
 for component in ${COMPONENTS[@]}; do
     sozo auth writer $component $ACTIONS_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
@@ -33,11 +33,9 @@ done
 
 echo "Default authorizations have been successfully set."
 
-
-# sozo auth writer MovesQueue 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
-# sozo auth writer RpsType 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
-# sozo auth writer GameData 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
-# sozo auth writer PlayerID 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
-# sozo auth writer Energy 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
-# sozo auth writer PlayerAddress 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
-# sozo auth writer PlayerAttPosition 0x19ec38d1ab2e9a808b226247a4cc00ba555c22e92c50e918798dc08832dff62 --world 0x4c8f99c6a9b022822bc7879c815e39272d216a3cd9fa75676fa6238ebe2ee93
+sozo auth writer Tile 0x1b4aead1d6c12b777951bbc9ddae7cea18d52a02cd9c14e41c176e995bc6997 --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15
+sozo auth writer PlayerId 0x1b4aead1d6c12b777951bbc9ddae7cea18d52a02cd9c14e41c176e995bc6997 --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15
+sozo auth writer GameData 0x1b4aead1d6c12b777951bbc9ddae7cea18d52a02cd9c14e41c176e995bc6997 --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15
+sozo auth writer PlayerAddress 0x1b4aead1d6c12b777951bbc9ddae7cea18d52a02cd9c14e41c176e995bc6997 --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15
+sozo auth writer Score 0x1b4aead1d6c12b777951bbc9ddae7cea18d52a02cd9c14e41c176e995bc6997 --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15
+sozo auth writer RemainingMoves 0x1b4aead1d6c12b777951bbc9ddae7cea18d52a02cd9c14e41c176e995bc6997 --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15
