@@ -263,9 +263,9 @@ export class HexGrid extends Phaser.GameObjects.Group {
     canPlaceShape(shape: string) {
         for (const hex of this.hexes) {
             if (hex.hexType === 0) {
-                for (const rotation of rotations[shape]) {
+                for (const rotation of (rotations as any)[shape]) {
                     let canPlaceHere = true;
-                    for (let offsets of shapes[rotation]) {
+                    for (const offsets of (shapes as any)[rotation]) {
                         const r = hex.row + offsets.ro;
                         const c = hex.col + offsets.co;
                         if (
@@ -324,7 +324,7 @@ export class HexGrid extends Phaser.GameObjects.Group {
         const hexes = [];
         let touching = false;
         for (let i = 0; i < 3; i++) {
-            const offsets = shapes[trihex.shape][i];
+            const offsets = (shapes as any)[trihex.shape][i];
             hexes.push(this.grid.get(r + offsets.ro, c + offsets.co));
             this.triPreviews[i].setX(getX(r + offsets.ro, c + offsets.co));
             this.triPreviews[i].setY(getY(r + offsets.ro, c + offsets.co));
@@ -394,11 +394,14 @@ export class HexGrid extends Phaser.GameObjects.Group {
         const hexes: Hex[] = [];
         let touching = false;
         for (let i = 0; i < 3; i++) {
-            const offsets = shapes[trihex.shape][i];
+            const offsets = (shapes as any)[trihex.shape][i];
             hexes.push(this.grid.get(r + offsets.ro, c + offsets.co) as Hex);
 
             if (!touching) {
-                for (let n of this.neighbors(r + offsets.ro, c + offsets.co)) {
+                for (const n of this.neighbors(
+                    r + offsets.ro,
+                    c + offsets.co
+                )) {
                     if (
                         n &&
                         (n.hexType === 1 ||

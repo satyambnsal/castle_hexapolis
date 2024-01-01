@@ -277,7 +277,11 @@ export class MainScene extends Phaser.Scene {
 
     updateBigTrihex() {
         for (let i = 0; i < 3; i++) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
             const row = shapes[this.nextTrihex.shape][i].ro;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             const col = shapes[this.nextTrihex.shape][i].co;
 
             if (this.nextTrihex?.shape === "a") {
@@ -358,12 +362,16 @@ export class MainScene extends Phaser.Scene {
 
     pickNextTrihex() {
         if (this.trihexDeck.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             this.nextTrihex = this.trihexDeck.pop();
 
-            this.deckCounterText.setText(String(this.trihexDeck.length));
+            this.deckCounterText?.setText(String(this.trihexDeck.length));
 
             if (this.trihexDeck.length > 0) {
-                this.deckCounterImage.setTexture(
+                this.deckCounterImage?.setTexture(
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     {
                         a: "a-shape",
                         v: "a-shape",

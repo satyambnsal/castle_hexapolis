@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { setup } from "../../dojo/setup";
 export class LoadScene extends Phaser.Scene {
     constructor() {
         super("load");
@@ -80,8 +79,6 @@ export class LoadScene extends Phaser.Scene {
     }
 
     async create() {
-        const networkLayer = await setup();
-        this.registry.set("networkLayer", networkLayer);
         this.scene.start("menu");
     }
 }
