@@ -1,8 +1,10 @@
 import { getEntityIdFromKeys } from "@dojoengine/utils";
-import { SetupResult, setup } from "../../dojo/setup";
 import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
 import { Entity } from "@dojoengine/recs";
+import { NetworkLayer } from "../../dojo/createNetworkLayer";
+import Phaser from "phaser";
+import { EVENTS } from "../constants";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your town\noutward from the TOWN CENTER\n\n\nTry to get the highest score you can!",
@@ -11,6 +13,19 @@ const tutorialTexts = [
     "Those are PARKS!\n\nEach group of connected Park hexes is\nworth 5 points for every 3 hexes in it",
     "Yep! To recap:\n- Streets want to connect Ports to\nthe Town Center\n- Wind Turbines want to be alone and\non Hills\n- Parks want to be grouped together\nin multiples of 3",
 ];
+
+// const gameJourneyTexts = [
+//     {
+//         heading: "Welcome, esteemed city planners and strategists!",
+//         description:
+//             "You have been summoned by the Lord of the Realm to the grand challenge of Castle Hexapolis, the digital realm where your urban planning skills and tactical acumen will be put to the test! This web-based browser game blends the charm of medieval citybuilding with the cerebral challenge of hexagonal tile placement. Prepare to embark on a journey of strategy, foresight, and creativity as you expand your city from a single Castle hex tile to a sprawling, interconnected metropolis.",
+//     },
+//     {
+//         heading: "Game Objective",
+//         description:
+//             "Your mission in Castle Hexapolis is straightforward yet captivating: skilfully expand your city outward from the central Castle tile, utilising a variety of hex tiles to maximize your points. With ROADS, WATCH TOWERS, and PARKS hex tiles at your disposal, every decision can tilt the balance of power in this dynamic cityscape.",
+//     },
+// ];
 
 const tutorialTypes = [[1, 2, 3, 4, 5], [3, 4, 5], [1], [2], [1, 2, 3, 4, 5]];
 
@@ -21,17 +36,10 @@ export class MenuScene extends Phaser.Scene {
     tutorialText: Phaser.GameObjects.BitmapText | null = null;
     tutorialPage = 0;
     tutorialButton: Button | null = null;
-    // setupResult: SetupResult | null = null;
 
     constructor() {
         super("menu");
-        // this.setupNetwork();
     }
-
-    // async setupNetwork() {
-    //     const setupResult = await setup();
-    //     this.setupResult = setupResult;
-    // }
 
     create() {
         this.cameras.main.setBounds(-1280, 0, 3840, 720);
@@ -41,13 +49,24 @@ export class MenuScene extends Phaser.Scene {
 
         this.add.image(920, 360, "blue");
 
+        const realmImage = this.add.image(250, 90, "realms_logo_black");
+        realmImage.setScale(0.5);
         const title = this.add.bitmapText(
             50,
-            100,
+            150,
             "font",
-            "SIX-SIDED STREETS",
+            "Castle Hexapolis",
             70
         );
+        const tagline = this.add.bitmapText(
+            100,
+            220,
+            "font",
+            "A Strategic City-Development Game",
+            70
+        );
+        tagline.setScale(0.3);
+
         this.menu.add(title);
 
         const playButton = new Button(
@@ -174,24 +193,18 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        const setupResult: SetupResult = this.registry.get("setupResult");
-
-        if (!setupResult) {
-            alert("Failed to connect with katana network");
-            return;
+        const networkLayer: NetworkLayer =
+            this.game.registry.get("networkLayer");
+        // console.log("network layer", networkLayer);
+        if (!networkLayer || !networkLayer.account) {
+            return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
         }
-        // console.log("setup result", this.setupResult);
-        // // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { network, systemCalls: { spawn } = {} } = setupResult;
+
+        const { network, systemCalls: { spawn } = {} } = networkLayer;
         const account = network?.account;
 
         try {
             spawn && (await spawn({ signer: account }));
-
-            const playerID = getEntityIdFromKeys([
-                BigInt(account.address ?? ""),
-            ]) as Entity;
-            console.log("=== player id ===", playerID);
         } catch (err) {
             console.log("Failed to call spawn", err);
         }

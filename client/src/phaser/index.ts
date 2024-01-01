@@ -1,6 +1,5 @@
 // import { createPhaserEngine } from "@latticexyz/phaserx";
 import { NetworkLayer } from "../dojo/createNetworkLayer";
-import { registerSystems } from "./systems/registerSystems";
 import { namespaceWorld } from "@dojoengine/recs";
 // import { TILE_HEIGHT, TILE_WIDTH } from "./config/constants";
 import Phaser from "phaser";
@@ -33,8 +32,6 @@ export const createPhaserLayer = async (
     };
 
     console.log("=== layer ===", layer);
-
-    registerSystems(layer);
 
     return layer;
 };

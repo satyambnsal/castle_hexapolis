@@ -5,14 +5,17 @@ import { PhaserLayer } from "./phaser";
 export type Store = {
     networkLayer: NetworkLayer | null;
     phaserLayer: PhaserLayer | null;
+    username: string;
+    setUsername: (username: string) => void;
+    loggedIn: boolean;
+    setLoggedIn: (loggedIn: boolean) => void;
 };
 
-export const store = create<Store>(() => ({
+export const store = create<Store>((set) => ({
     networkLayer: null,
     phaserLayer: null,
-}));
-
-export const useUIStore = create((set) => ({
     loggedIn: false,
-    setLoggedIn: () => set(() => ({ loggedIn: true })),
+    setLoggedIn: (loggedIn: boolean) => set(() => ({ loggedIn })),
+    username: "",
+    setUsername: (username: string) => set(() => ({ username })),
 }));

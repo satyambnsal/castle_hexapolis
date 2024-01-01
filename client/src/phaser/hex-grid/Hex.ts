@@ -130,11 +130,14 @@ export class Hex extends Phaser.GameObjects.Image {
     }
 
     setType(hexType: number) {
-        this.setTexture(
+        const texture = this.setTexture(
             ["empty", "windmill", "grass", "street", "center", "port-bw"][
                 hexType
             ]
         );
+        if (hexType === 4) {
+            texture.setScale(1.1);
+        }
         this.hexType = hexType;
         if (hexType === 1) {
             this.propeller.setVisible(true);
@@ -198,7 +201,7 @@ export class Hex extends Phaser.GameObjects.Image {
                 if (this.upgraded) this.setTexture("house-bw");
                 else this.setTexture("street-bw");
             } else if (this.hexType === 4) {
-                this.setTexture("center-bw");
+                this.setTexture("center");
             } else if (this.hexType === 5) {
                 this.setTexture("port-bw");
             }
