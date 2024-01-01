@@ -26,12 +26,12 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("house-bw", "img/house-bw.png");
         this.load.image("center", "img/castle_2.png");
         this.load.image("center-bw", "img/castle-bw_2.png");
-        this.load.image("windmill", "img/windmill.png");
+        this.load.image("windmill", "img_2/watchtower_Lvl1.png");
         this.load.image("propeller", "img/propeller.png");
-        this.load.image("windmill-red", "img/windmill-red.png");
-        this.load.image("windmill-hill", "img/windmill-hill.png");
-        this.load.image("windmill-bw", "img/windmill-bw.png");
-        this.load.image("windmill-hill-bw", "img/windmill-hill-bw.png");
+        this.load.image("windmill-red", "img_2/watchtower_Lvl1_red.png");
+        this.load.image("windmill-hill", "img_2/watchtower_Lvl2.png");
+        this.load.image("windmill-bw", "img_2/watchtower_Lvl1-bw.png");
+        this.load.image("windmill-hill-bw", "img_2/watchtower_Lvl2-bw.png");
         this.load.image("port-bw", "img/port.png");
         this.load.spritesheet("port", "img/port-color.png", {
             frameWidth: 140,

@@ -19,7 +19,7 @@ export class Hex extends Phaser.GameObjects.Image {
     swEdge: Phaser.GameObjects.Image;
     seEdge: Phaser.GameObjects.Image;
     edges: Phaser.GameObjects.Group;
-    propeller: Phaser.GameObjects.Image;
+    // propeller: Phaser.GameObjects.Image;
 
     constructor(
         scene: Phaser.Scene,
@@ -64,10 +64,10 @@ export class Hex extends Phaser.GameObjects.Image {
         this.swEdge.setScale(0.5);
         this.seEdge.setScale(0.5);
 
-        this.propeller = scene.add.image(x, y, "propeller");
-        this.propeller.setScale(0.5);
-        this.propeller.setVisible(false);
-        this.propeller.setDepth(2);
+        // this.propeller = scene.add.image(x, y, "propeller");
+        // this.propeller.setScale(0.5);
+        // this.propeller.setVisible(false);
+        // this.propeller.setDepth(2);
 
         this.puffer = scene.add.particles("particle").createEmitter({
             x: 0,
@@ -99,7 +99,7 @@ export class Hex extends Phaser.GameObjects.Image {
         this.wEdge.setX(x);
         this.swEdge.setX(x);
         this.seEdge.setX(x);
-        this.propeller.setX(x);
+        // this.propeller.setX(x);
         return this;
     }
 
@@ -111,7 +111,7 @@ export class Hex extends Phaser.GameObjects.Image {
         this.wEdge.setY(y);
         this.swEdge.setY(y);
         this.seEdge.setY(y);
-        this.propeller.setY(y);
+        // this.propeller.setY(y);
         return this;
     }
 
@@ -124,8 +124,8 @@ export class Hex extends Phaser.GameObjects.Image {
         this.seEdge.setScale(0.75);
         this.edges.setAlpha(1);
         this.edges.setDepth(5);
-        this.propeller.setDepth(6);
-        this.propeller.setScale(0.75);
+        // this.propeller.setDepth(6);
+        // this.propeller.setScale(0.75);
         this.setScale(0.75);
     }
 
@@ -135,20 +135,20 @@ export class Hex extends Phaser.GameObjects.Image {
                 hexType
             ]
         );
-        if (hexType === 4) {
-            texture.setScale(1.1);
+        if (hexType === 4 || hexType == 1) {
+            texture.setScale(1.15);
         }
         this.hexType = hexType;
         if (hexType === 1) {
-            this.propeller.setVisible(true);
+            // this.propeller.setVisible(true);
             if (this.hasHill) {
-                this.propeller.setY(this.y - 70 * this.scale);
+                // this.propeller.setY(this.y - 70 * this.scale);
                 this.setTexture("windmill-hill");
             } else {
-                this.propeller.setY(this.y - 30 * this.scale);
+                // this.propeller.setY(this.y - 30 * this.scale);
             }
         } else {
-            this.propeller.setVisible(false);
+            // this.propeller.setVisible(false);
         }
         if (hexType === 1) {
             this.puffer.setTint(0xffffff);
@@ -193,7 +193,7 @@ export class Hex extends Phaser.GameObjects.Image {
             } else if (this.hexType === 1) {
                 if (this.hasHill) this.setTexture("windmill-hill-bw");
                 else this.setTexture("windmill-bw");
-                this.propeller.setVisible(false);
+                // this.propeller.setVisible(false);
             } else if (this.hexType === 2) {
                 if (this.upgraded) this.setTexture("tree-bw");
                 else this.setTexture("grass-bw");
@@ -212,7 +212,7 @@ export class Hex extends Phaser.GameObjects.Image {
             } else if (this.hexType === 1) {
                 if (this.hasHill) this.setTexture("windmill-hill");
                 else this.setTexture("windmill");
-                this.propeller.setVisible(true);
+                // this.propeller.setVisible(true);
             } else if (this.hexType === 2) {
                 if (this.upgraded) this.setTexture("tree");
                 else this.setTexture("grass");
@@ -229,10 +229,10 @@ export class Hex extends Phaser.GameObjects.Image {
     }
 
     update(time: number, delta: number) {
-        if (this.propeller.visible) {
-            const speed =
-                this.hasHill && this.counted ? 2.2 : this.counted ? 1 : 0.1;
-            this.propeller.setAngle(this.propeller.angle + speed * 0.1 * delta);
-        }
+        // if (this.propeller.visible) {
+        //     const speed =
+        //         this.hasHill && this.counted ? 2.2 : this.counted ? 1 : 0.1;
+        //     this.propeller.setAngle(this.propeller.angle + speed * 0.1 * delta);
+        // }
     }
 }
