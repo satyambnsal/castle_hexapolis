@@ -39,7 +39,8 @@ export class LoadScene extends Phaser.Scene {
             frameHeight: 140,
         });
 
-        this.load.image("blue", "img/blue.png");
+        this.load.image("blue", "img/map_pattern.png");
+        this.load.image("map_pattern", "img/map_pattern.png");
         this.load.image("rotate", "img/rotate.png");
         this.load.image("question", "img/question.png");
         this.load.image("x", "img/x.png");

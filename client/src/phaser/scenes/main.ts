@@ -50,14 +50,17 @@ export class MainScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.rectangle(640, 360, 1280, 720, 0x90c7e5);
+        this.add.rectangle(640, 360, 1280, 720);
+        const bgImage = this.add.image(640, 360, "map_pattern");
+        bgImage.setScale(0.2);
+        bgImage.setAlpha(0.1);
         this.score = 0;
         this.scoreBreakdown = [0, 0, 0, 0, 0, 0];
 
         this.pointerDown = false;
 
-        this.waves = this.add.image(640, 360, "waves");
-        this.waves2 = this.add.image(640, 360, "waves2");
+        // this.waves = this.add.image(640, 360, "waves");
+        // this.waves2 = this.add.image(640, 360, "waves2");
 
         this.grid = new HexGrid(this, 5, 8, 0, 0, this.onNewPoints.bind(this));
         this.trihexDeck = this.createTrihexDeck(25, true);

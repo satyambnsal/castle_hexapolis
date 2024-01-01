@@ -26,7 +26,7 @@ export const PhaserLayer = () => {
         const game = new Phaser.Game(config);
         game.events.on("gameIsReday", setReady);
         game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
-            alert("Failed to connect with katan network");
+            alert("Failed to connect with katana network");
         });
         setGame(game);
         return () => {

@@ -46,7 +46,9 @@ export class MenuScene extends Phaser.Scene {
 
         this.background = this.add.image(360, 360, "page");
 
-        this.add.image(920, 360, "blue");
+        const map_pattern = this.add.image(920, 360, "map_pattern");
+        map_pattern.setScale(0.05);
+        map_pattern.setAlpha(0.3);
 
         const realmImage = this.add.image(250, 90, "realms_logo_black");
         realmImage.setScale(0.5);
@@ -194,7 +196,12 @@ export class MenuScene extends Phaser.Scene {
         const networkLayer: SetupResult =
             this.game.registry.get("networkLayer");
         console.log("network layer menu", networkLayer);
-        
+
+        console.log(
+            "######## CALLER ACCOUNT ######\n",
+            networkLayer?.network.account.address,
+            "\n###########"
+        );
         if (!networkLayer || !networkLayer.network.account) {
             return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
             return;
