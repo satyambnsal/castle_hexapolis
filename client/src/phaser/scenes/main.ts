@@ -196,7 +196,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     onNewPoints(points: number, hexType: number) {
-        const networkLayer = this.registry.get("networkLayer");
+        const networkLayer = this.game.registry.get("networkLayer");
 
         if (!networkLayer.account) {
             alert("Failed to connect to katana network");
@@ -215,7 +215,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     async onPlaceTile(tiles: Tile[]) {
-        const networkLayer = this.registry.get("networkLayer");
+        const networkLayer = this.game.registry.get("networkLayer");
 
         if (!networkLayer.account) {
             alert("Failed to connect to katana network");

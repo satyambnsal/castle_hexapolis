@@ -3,6 +3,7 @@ import { Button } from "../util";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import Phaser from "phaser";
 import { EVENTS } from "../constants";
+import { SetupResult, setup } from "../../dojo/setup";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your city\noutward from the Castle\n\n\nTry to get the highest score you can!",
@@ -190,10 +191,15 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        const networkLayer: NetworkLayer =
-            this.game.registry.get("networkLayer");
+        let networkLayer: SetupResult = this.game.registry.get("networkLayer");
         console.log("network layer", networkLayer);
-        if (!networkLayer || !networkLayer.account) {
+        if (!networkLayer) {
+            networkLayer = await setup();
+            this.game.registry.set("networkLayer", networkLayer);
+        }
+
+        console.log("network layer menu", networkLayer);
+        if (!networkLayer || !networkLayer.network.account) {
             return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
         }
 
