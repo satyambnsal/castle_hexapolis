@@ -1,3 +1,4 @@
+import { SetupResult, setup } from "../../dojo/setup";
 import { Tile } from "../../dojo/types";
 import {
     HexGrid,
@@ -49,7 +50,7 @@ export class MainScene extends Phaser.Scene {
         super("main");
     }
 
-    create() {
+    async create() {
         this.add.rectangle(640, 360, 1280, 720);
         const bgImage = this.add.image(640, 360, "map_pattern");
         bgImage.setScale(0.2);
@@ -196,6 +197,15 @@ export class MainScene extends Phaser.Scene {
         );
 
         this.input.on("wheel", this.onMouseWheel, this);
+        let networkLayer: SetupResult = this.registry.get("networkLayer");
+
+        if (!networkLayer) {
+            try {
+                networkLayer = await setup();
+            } catch (err) {
+                console.log(`Failed to setup network layer in main -> create`);
+            }
+        }
     }
 
     onNewPoints(points: number, hexType: number) {
