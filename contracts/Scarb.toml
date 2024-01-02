@@ -25,7 +25,7 @@ initializer_class_hash = "0xbeef"
 rpc_url = "https://api.cartridge.gg/x/castle-hexapolis/katana"
 account_address = "0x1872d38801be6a0150c3140a8deab45c14415dedf97446fa3aed2ab9867bb1f"
 private_key = "0x5ef37f38f59526582197b050380db86a85f3de7cbd02419b914ea2f90f227f1"
-# world = "0x4e883243427b73a7fdf52f2db47f1e4f4130c79bd079aa3874b1dd336fee724"
+# world = "0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15"
 
 [tool.dojo.world]
 name = "Castle Hexapolis"
