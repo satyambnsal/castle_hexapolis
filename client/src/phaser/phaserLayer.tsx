@@ -30,7 +30,7 @@ export const PhaserLayer = ({
 
         game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
             alert(
-                "Failed to connect with katana network. Please try again once!. "
+                "Wallet generation is in progress. Usually it takes 5-8 seconds on first reload. Try Again once!"
             );
             if (networkLayer) {
                 game.registry.set(NETWORK_LAYER_KEY, networkLayer);
