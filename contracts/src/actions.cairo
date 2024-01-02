@@ -5,6 +5,7 @@
 
 #[dojo::contract]
 mod actions {
+    use core::clone::Clone;
     use core::array::SpanTrait;
     use core::option::OptionTrait;
     use core::array::ArrayTrait;
@@ -12,7 +13,8 @@ mod actions {
     use starknet::{ContractAddress, get_caller_address};
     use debug::PrintTrait;
     use castle_hexapolis::interface::IActions;
-
+    use castle_hexapolis::queue::{Queue, QueueTrait};
+    use core::dict::Felt252Dict;
     // import models
     use castle_hexapolis::models::{
         GAME_DATA_KEY, TileType, Tile, GameData, Score, RemainingMoves, PlayerAddress, PlayerId,
@@ -212,12 +214,6 @@ mod actions {
 
     fn is_tile_occupied(world: IWorldDispatcher, row: u8, col: u8, player_id: u128) -> bool {
         let tile = get!(world, (row, col, player_id), (Tile));
-        // 'tile'.print();
-        // tile.player_id.print();
-        // tile.row.print();
-        // let t: TileType = tile.tile_type;
-        // let t1: felt252 = t.into();
-        // t1.print();
 
         tile.tile_type != TileType::Empty
     }
@@ -263,8 +259,8 @@ mod actions {
                 result.append(current);
             }
         };
-        'neighbours len'.print();
-        result.len().print();
+        // 'neighbours len'.print();
+        // result.len().print();
 
         result
     }
@@ -387,15 +383,52 @@ mod actions {
         );
     }
 
-    fn calculate_score_for_tile(world: IWorldDispatcher, tile: Tile) -> u8 {
-        if (tile.counted) {
-            return 0;
-        }
+    fn get_connected(world: IWorldDispatcher, tile: Tile) -> Array<Tile> {
+        let mut connected_tiles: Array<Tile> = ArrayTrait::new();
+        let mut visited_map: Felt252Dict<bool> = Default::default();
+        let mut queue = QueueTrait::<Tile>::new();
+        queue.enqueue(tile);
 
+        loop {
+            if (queue.len() == 0) {
+                break;
+            }
+            let t = queue.dequeue().unwrap();
+            let tilePos: felt252 = (t.row + t.col).into();
+            if (visited_map.get(tilePos) != true) {
+                connected_tiles.append(t);
+            }
+            visited_map.insert(tilePos, true);
+
+            let mut neighbors = get_neighbors(world, t);
+            loop {
+                if (neighbors.len() == 0) {
+                    break;
+                }
+                let current_neighbour = neighbors.pop_front().unwrap();
+                let current_neighbour_pos: felt252 = (current_neighbour.row + current_neighbour.col)
+                    .into();
+
+                if (visited_map.get(current_neighbour_pos) != true
+                    && (current_neighbour.tile_type == t.tile_type
+                        || (t.tile_type == TileType::Road
+                            && current_neighbour.tile_type == TileType::CityGate))) {
+                    queue.enqueue(current_neighbour);
+                }
+            };
+        };
+        connected_tiles
+    }
+
+    impl QueueTileDrop of Drop<Queue<Tile>>;
+
+    fn calculate_score_for_tile(world: IWorldDispatcher, tile: Tile) -> u8 {
+        let mut score = 0;
+        if (tile.counted) {
+            return score;
+        }
         if (tile.tile_type == TileType::WatchTower) {
             let mut isolated = true;
-            let mut score = 0;
-
             let mut neighbors = get_neighbors(world, tile);
 
             loop {
@@ -436,9 +469,127 @@ mod actions {
             }
 
             return score;
-        } else {
-            return 1;
+        } else if (tile.tile_type == TileType::Park) {
+            let mut group = get_connected(world, tile);
+            let mut unaccounted_trees: Array<Tile> = ArrayTrait::new();
+            // unaccounted_trees.len().print();
+            loop {
+                if (group.len() == 0) {
+                    break;
+                }
+                let g = group.pop_front().unwrap();
+                if (g.counted == false) {
+                    unaccounted_trees.append(g);
+                }
+            };
+
+            loop {
+                if (unaccounted_trees.len() < 3) {
+                    break;
+                }
+                let first_tree = unaccounted_trees.pop_front().unwrap();
+                let second_tree = unaccounted_trees.pop_front().unwrap();
+                let third_tree = unaccounted_trees.pop_front().unwrap();
+                set!(
+                    world,
+                    (
+                        Tile {
+                            row: first_tree.row,
+                            col: first_tree.col,
+                            player_id: first_tree.player_id,
+                            is_hill: first_tree.is_hill,
+                            tile_type: first_tree.tile_type,
+                            counted: true
+                        },
+                        Tile {
+                            row: second_tree.row,
+                            col: second_tree.col,
+                            player_id: second_tree.player_id,
+                            is_hill: second_tree.is_hill,
+                            tile_type: second_tree.tile_type,
+                            counted: true
+                        },
+                        Tile {
+                            row: third_tree.row,
+                            col: third_tree.col,
+                            player_id: third_tree.player_id,
+                            is_hill: third_tree.is_hill,
+                            tile_type: third_tree.tile_type,
+                            counted: true
+                        }
+                    )
+                );
+                score += 5;
+            }
+        } else if (tile.tile_type == TileType::Road) {
+            let mut neighbours = get_neighbors(world, tile);
+            loop {
+                if (neighbours.len() == 0) {
+                    break;
+                }
+                let current_neighbour = neighbours.pop_front().unwrap();
+                if (current_neighbour.tile_type == TileType::Castle && !tile.counted) {
+                    score += 1;
+                    set!(
+                        world,
+                        (Tile {
+                            row: tile.row,
+                            col: tile.col,
+                            player_id: tile.player_id,
+                            is_hill: tile.is_hill,
+                            tile_type: tile.tile_type,
+                            counted: true
+                        })
+                    );
+                }
+            };
+            let mut group = get_connected(world, tile);
+            let mut group_copy = group.clone();
+            let mut connected_to_castle = false;
+            let mut i = group.len() - 1;
+            loop {
+                if (group_copy.len() == 0) {
+                    break;
+                }
+                let t = group_copy.pop_front().unwrap();
+                if (t.tile_type == TileType::Road && t.counted) {
+                    connected_to_castle = true;
+                    break;
+                }
+            };
+            // 'connected to castle'.print();
+            // connected_to_castle.print();
+            if (connected_to_castle) {
+                loop {
+                    if (group.len() == 0) {
+                        break;
+                    }
+
+                    let current_neighbour = group.pop_front().unwrap();
+                    if (!current_neighbour.counted) {
+                        if (current_neighbour.tile_type == TileType::CityGate) {
+                            score += 3;
+                        } else {
+                            score += 1;
+                        }
+                        set!(
+                            world,
+                            Tile {
+                                row: current_neighbour.row,
+                                col: current_neighbour.col,
+                                player_id: current_neighbour.player_id,
+                                is_hill: current_neighbour.is_hill,
+                                tile_type: current_neighbour.tile_type,
+                                counted: true
+                            }
+                        );
+                    }
+                }
+            }
         }
+        'final score'.print();
+        score.print();
+        score
     }
 
     fn validate_tile_type(tile_type: TileType) -> bool {

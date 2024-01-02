@@ -4,7 +4,6 @@ mod tests {
     use starknet::class_hash::Felt252TryIntoClassHash;
     use starknet::ContractAddress;
     use debug::PrintTrait;
-
     // import world dispatcher
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
@@ -125,23 +124,52 @@ mod tests {
         ];
         actions_.place_tile(tiles.span());
     }
-// #[test]
-// #[available_gas(300000000000)]
-// #[ignore]
-// fn remaining_moves_test() {
-//     let (caller, world, actions_) = spawn_world();
-//     actions_.spawn();
-//     let player_id = get!(world, caller, (PlayerId)).player_id;
-//     let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Park);
-//     let tile2 = (GRID_SIZE - 1, GRID_SIZE, TileType::Park);
-//     actions_.place_tile(tile1);
-//     actions_.place_tile(tile2);
-//     actions_.place_tile(tile3);
 
-//     let remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
-//     assert(remaining_moves == REMAINING_MOVES_DEFAULT - 3, 'incorrect remaining moves');
-// }
+    #[test]
+    #[available_gas(30000000000)]
+    fn place_park_tile_test() {
+        let (caller, world, actions_) = spawn_world();
+        actions_.spawn();
+        let player_id = get!(world, caller, (PlayerId)).player_id;
+        let tiles = array![
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Park),
+            (GRID_SIZE, GRID_SIZE + 2, TileType::Park),
+            (GRID_SIZE, GRID_SIZE + 3, TileType::Park)
+        ];
+        actions_.place_tile(tiles.span());
+        let remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
+        assert(remaining_moves == REMAINING_MOVES_DEFAULT - 1, 'incorrect remaining moves');
 
+        let score = get!(world, player_id, (Score)).score;
+        assert(score == 5, 'incorrect score');
+    }
+
+    #[test]
+    #[available_gas(30000000000)]
+    fn place_road_tile_test() {
+        let (caller, world, actions_) = spawn_world();
+        actions_.spawn();
+        let player_id = get!(world, caller, (PlayerId)).player_id;
+
+        let tile_set_1 = array![
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Road),
+            (GRID_SIZE, GRID_SIZE + 2, TileType::Road),
+            (GRID_SIZE, GRID_SIZE + 3, TileType::Road)
+        ];
+        let tile_set_2 = array![
+            (GRID_SIZE - 1, GRID_SIZE + 4, TileType::Road),
+            (GRID_SIZE, GRID_SIZE + 4, TileType::Road),
+            (GRID_SIZE + 1, GRID_SIZE + 4, TileType::Road)
+        ];
+
+        actions_.place_tile(tile_set_1.span());
+        actions_.place_tile(tile_set_2.span());
+        let remaining_moves = get!(world, player_id, (RemainingMoves)).moves;
+        assert(remaining_moves == REMAINING_MOVES_DEFAULT - 2, 'incorrect remaining moves');
+
+        let score = get!(world, player_id, (Score)).score;
+        assert(score == 10, 'incorrect score');
+    }
 // #[test]
 // #[available_gas(30000000)]
 // #[ignore]
