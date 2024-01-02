@@ -1,5 +1,6 @@
-import { SetupResult, setup } from "../../dojo/setup";
+import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import { Tile } from "../../dojo/types";
+import { NETWORK_LAYER_KEY } from "../constants";
 import {
     HexGrid,
     Trihex,
@@ -200,7 +201,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     onNewPoints(points: number, hexType: number) {
-        const networkLayer = this.registry.get("networkLayer");
+        const networkLayer = this.registry.get(NETWORK_LAYER_KEY);
 
         if (!networkLayer?.network?.account) {
             alert("Failed to connect to katana network");
@@ -219,10 +220,10 @@ export class MainScene extends Phaser.Scene {
     }
 
     async onPlaceTile(tiles: Tile[]) {
-        const networkLayer = this.registry.get("networkLayer");
+        const networkLayer = this.registry.get(NETWORK_LAYER_KEY);
 
         if (!networkLayer?.network?.account) {
-            alert("Failed to connect to katana network");
+            alert("Failed to connect to katana network. Please try again!");
             return;
         }
         const {
@@ -591,7 +592,24 @@ export class MainScene extends Phaser.Scene {
         });
     }
 
-    playAgain() {
+    async playAgain() {
+        const networkLayer: NetworkLayer = this.registry.get(NETWORK_LAYER_KEY);
+
+        if (!networkLayer?.network?.account) {
+            alert("Failed to connect to katana network. Please try again!");
+            return;
+        }
+        const {
+            systemCalls: { spawn },
+            network: { account },
+        } = networkLayer;
+
+        try {
+            spawn && (await spawn({ signer: account }));
+        } catch (err) {
+            console.log("Failed to call spawn", err);
+        }
+
         this.breakdownContainer?.setVisible(false);
         this.gameOverText?.setVisible(false);
         this.nextRankText?.setVisible(false);

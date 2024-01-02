@@ -27,7 +27,10 @@ function App() {
             <BrowserRouter>
                 <NavBar />
                 <Routes>
-                    <Route path="/" element={<PhaserLayer />}></Route>
+                    <Route
+                        path="/"
+                        element={<PhaserLayer networkLayer={networkLayer} />}
+                    ></Route>
                     <Route path="about" element={<AboutGame />} />
                     <Route path="leaderboard" element={<Leaderboard />} />
                     <Route path="settings" element={<Settings />} />

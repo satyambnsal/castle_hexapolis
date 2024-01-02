@@ -2,8 +2,8 @@ import { HexGrid } from "../hex-grid";
 import { Button } from "../util";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import Phaser from "phaser";
-import { EVENTS } from "../constants";
-import { SetupResult, setup } from "../../dojo/setup";
+import { EVENTS, NETWORK_LAYER_KEY } from "../constants";
+import { SetupResult } from "../../dojo/setup";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your city\noutward from the Castle\n\n\nTry to get the highest score you can!",
@@ -37,18 +37,6 @@ export class MenuScene extends Phaser.Scene {
     tutorialButton: Button | null = null;
     constructor() {
         super("menu");
-    }
-
-    async preload() {
-        let networkLayer: SetupResult = this.registry.get("networkLayer");
-        if (!networkLayer) {
-            try {
-                networkLayer = await setup();
-                this.registry.set("networkLayer", networkLayer);
-            } catch (err) {
-                console.log(`Failed to setup network layer in main -> create`);
-            }
-        }
     }
 
     async create() {
@@ -206,19 +194,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        const networkLayer: SetupResult = this.registry.get("networkLayer");
-        console.log("play network layer", networkLayer);
-        if (!networkLayer) {
-            try {
-                const networkLayer = await setup();
-                this.registry.set("networkLayer", networkLayer);
-            } catch (err) {
-                console.log(
-                    "Failed to connect to network layer. click on play button again!"
-                );
-            }
-        }
-        console.log("network layer menu", networkLayer);
+        const networkLayer: SetupResult = this.registry.get(NETWORK_LAYER_KEY);
 
         console.log(
             "######## CALLER ACCOUNT ######\n",

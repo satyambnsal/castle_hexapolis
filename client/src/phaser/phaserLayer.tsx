@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { LoadScene, MainScene, MenuScene } from "./scenes";
 import clsx from "clsx";
-import { EVENTS } from "./constants";
-import { useNetworkLayer } from "../ui/hooks/useNetworkLayer";
-import { setup } from "../dojo/setup";
+import { EVENTS, NETWORK_LAYER_KEY } from "./constants";
+import { NetworkLayer } from "../dojo/createNetworkLayer";
 
-export const PhaserLayer = () => {
-    const networkLayer = useNetworkLayer();
-    const [isReady, setReady] = useState(false);
+export const PhaserLayer = ({
+    networkLayer,
+}: {
+    networkLayer: NetworkLayer | null;
+}) => {
+    console.log("network layer props", networkLayer);
     const [game, setGame] = useState<Phaser.Game | null>();
 
     useEffect(() => {
@@ -22,42 +24,26 @@ export const PhaserLayer = () => {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 mode: Phaser.Scale.FIT,
             },
-            callbacks: {
-                postBoot: async (game) => {
-                    try {
-                        const networkLayer = await setup();
-                        game.registry.set("networkLayer", networkLayer);
-                        console.log("setting in postboot", networkLayer);
-                    } catch (err) {
-                        console.log(
-                            `Failed to setup network layer in main -> create`
-                        );
-                    }
-                },
-            },
         };
 
         const game = new Phaser.Game(config);
-        
-        game.events.on("gameIsReday", setReady);
+
         game.events.on(EVENTS.NETWORK_CONNECTION_FAILED, () => {
-            alert("Failed to connect with katana network");
+            alert(
+                "Failed to connect with katana network. Please try again once!. "
+            );
         });
         setGame(game);
         return () => {
-            setReady(false);
             game.destroy(true);
         };
     }, []);
 
-    if (!networkLayer) return null;
+    useEffect(() => {
+        if (networkLayer) {
+            game?.registry.set(NETWORK_LAYER_KEY, networkLayer);
+        }
+    }, [networkLayer, game]);
 
-    return (
-        <div
-            id="castle-hex"
-            className={clsx("bg-red", {
-                hidden: !isReady,
-            })}
-        />
-    );
+    return <div id="castle-hex" className={clsx("bg-red")} />;
 };

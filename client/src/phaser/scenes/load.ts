@@ -81,7 +81,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio("click", "sfx/click.wav");
     }
 
-    async create() {
+    create() {
         this.scene.start("menu");
     }
 }
