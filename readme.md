@@ -169,3 +169,15 @@ slot deployments create castle-hexapolis torii --rpc https://api.cartridge.gg/x/
 # Update authentication for the release
 ./scripts/default_auth.sh release
 ```
+
+Design Inspirations and game Asset credit:
+
+Six Sided Streets (Chris Klimowski)
+
+My City (Reiner Knizia)
+
+Tiny Islands (David King)
+
+Cascadia (Randy Flynn)
+
+
