@@ -105,8 +105,6 @@ Try to get the highest score you can!
 
 +5 points for every 3 PARKS in a connected group
 
-Deployed Katana Instance: https://api.cartridge.gg/x/castle-hexapolis/katana
-
 
 
 ## How to run client
@@ -169,6 +167,9 @@ slot deployments create castle-hexapolis torii --rpc https://api.cartridge.gg/x/
 # Update authentication for the release
 ./scripts/default_auth.sh release
 ```
+
+Deployed Katana Instance: https://api.cartridge.gg/x/castle-hexapolis/katana
+Deployed Torii Instance: https://api.cartridge.gg/x/castle-hexapolis/torii
 
 Design Inspirations and game Asset credit:
 

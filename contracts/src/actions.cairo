@@ -437,7 +437,6 @@ mod actions {
 
             return score;
         } else {
-            // Implement logic for tiletype road and park
             return 1;
         }
     }
