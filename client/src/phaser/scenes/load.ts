@@ -5,6 +5,64 @@ export class LoadScene extends Phaser.Scene {
     }
 
     preload() {
+        const progressBar = this.add.graphics();
+        const progressBox = this.add.graphics();
+        progressBox.fillStyle(0x222222, 0.8);
+        progressBox.fillRect(240, 270, 320, 50);
+
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
+        const loadingText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 50,
+            text: "Loading...",
+            style: {
+                font: "20px monospace",
+                color: "#ffffff",
+            },
+        });
+        loadingText.setOrigin(0.5, 0.5);
+
+        const percentText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 5,
+            text: "0%",
+            style: {
+                font: "18px monospace",
+                color: "#ffffff",
+            },
+        });
+        percentText.setOrigin(0.5, 0.5);
+
+        const assetText = this.make.text({
+            x: width / 2,
+            y: height / 2 + 50,
+            text: "",
+            style: {
+                font: "18px monospace",
+                color: "#ffffff",
+            },
+        });
+        assetText.setOrigin(0.5, 0.5);
+
+        this.load.on("progress", function (value: number) {
+            percentText.setText(Math.ceil(value * 100) + "%");
+            progressBar.clear();
+            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillRect(250, 280, 300 * value, 30);
+        });
+
+        this.load.on("fileprogress", function (file: any) {
+            assetText.setText("Loading asset: " + file.key);
+        });
+        this.load.on("complete", function () {
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+            percentText.destroy();
+            assetText.destroy();
+        });
+
         this.load.image("white", "img/white.png");
         this.load.image("edge-e", "img/edge-e.png");
         this.load.image("edge-ne", "img/edge-ne.png");
@@ -64,10 +122,6 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("play-again-button", "img/play-again-button.png");
         this.load.image("how-to-play-button", "img/how-to-play-button.png");
         this.load.image("realms_logo_black", "img/realms_logo_black.svg");
-
-        // New assets
-        // this.load.image("castle", "img/castle.png");
-        // this.load.image("castle-bw"), "img/castle-bw.png";
 
         this.load.bitmapFont("font", "font/font.png", "font/font.fnt");
         this.load.audio("ambience", "sfx/ambience.wav");
