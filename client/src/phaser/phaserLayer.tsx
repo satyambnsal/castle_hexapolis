@@ -32,6 +32,9 @@ export const PhaserLayer = ({
             alert(
                 "Failed to connect with katana network. Please try again once!. "
             );
+            if (networkLayer) {
+                game.registry.set(NETWORK_LAYER_KEY, networkLayer);
+            }
         });
         setGame(game);
         return () => {

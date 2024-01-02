@@ -1,6 +1,6 @@
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import { Tile } from "../../dojo/types";
-import { NETWORK_LAYER_KEY } from "../constants";
+import { EVENTS, NETWORK_LAYER_KEY } from "../constants";
 import {
     HexGrid,
     Trihex,
@@ -205,7 +205,7 @@ export class MainScene extends Phaser.Scene {
         const networkLayer = this.registry.get(NETWORK_LAYER_KEY);
 
         if (!networkLayer?.network?.account) {
-            alert("Failed to connect to katana network");
+            return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
             return;
         }
         const {
@@ -224,8 +224,7 @@ export class MainScene extends Phaser.Scene {
         const networkLayer = this.registry.get(NETWORK_LAYER_KEY);
 
         if (!networkLayer?.network?.account) {
-            alert("Failed to connect to katana network. Please try again!");
-            return;
+            return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
         }
         const {
             systemCalls: { place_tile },
@@ -597,8 +596,7 @@ export class MainScene extends Phaser.Scene {
         const networkLayer: NetworkLayer = this.registry.get(NETWORK_LAYER_KEY);
 
         if (!networkLayer?.network?.account) {
-            alert("Failed to connect to katana network. Please try again!");
-            return;
+            return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
         }
         const {
             systemCalls: { spawn },

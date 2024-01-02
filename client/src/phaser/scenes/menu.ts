@@ -203,7 +203,6 @@ export class MenuScene extends Phaser.Scene {
         );
         if (!networkLayer || !networkLayer.network.account) {
             return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
-            return;
         }
 
         const { network, systemCalls: { spawn } = {} } = networkLayer;
