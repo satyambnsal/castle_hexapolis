@@ -131,7 +131,7 @@ export class Hex extends Phaser.GameObjects.Image {
 
     setType(hexType: number) {
         const texture = this.setTexture(
-            ["empty", "windmill", "grass", "street", "center", "port-bw"][
+            ["empty", "watchtower", "grass", "street", "center", "port-bw"][
                 hexType
             ]
         );
@@ -143,7 +143,7 @@ export class Hex extends Phaser.GameObjects.Image {
             // this.propeller.setVisible(true);
             if (this.hasHill) {
                 // this.propeller.setY(this.y - 70 * this.scale);
-                this.setTexture("windmill-hill");
+                this.setTexture("watchtower-hill");
             } else {
                 // this.propeller.setY(this.y - 30 * this.scale);
             }
@@ -191,8 +191,8 @@ export class Hex extends Phaser.GameObjects.Image {
             if (this.hexType === 0) {
                 this.setTexture("empty");
             } else if (this.hexType === 1) {
-                if (this.hasHill) this.setTexture("windmill-hill-bw");
-                else this.setTexture("windmill-bw");
+                if (this.hasHill) this.setTexture("watchtower-hill-bw");
+                else this.setTexture("watchtower-bw");
                 // this.propeller.setVisible(false);
             } else if (this.hexType === 2) {
                 if (this.upgraded) this.setTexture("tree-bw");
@@ -210,8 +210,8 @@ export class Hex extends Phaser.GameObjects.Image {
             if (this.hexType === 0) {
                 this.setTexture("empty");
             } else if (this.hexType === 1) {
-                if (this.hasHill) this.setTexture("windmill-hill");
-                else this.setTexture("windmill");
+                if (this.hasHill) this.setTexture("watchtower-hill");
+                else this.setTexture("watchtower");
                 // this.propeller.setVisible(true);
             } else if (this.hexType === 2) {
                 if (this.upgraded) this.setTexture("tree");

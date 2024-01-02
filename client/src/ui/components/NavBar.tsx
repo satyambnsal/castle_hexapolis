@@ -17,11 +17,11 @@ export const NavBar = () => {
 
 const NavLink = ({ to, label }: { to: string; label: string }) => {
     return (
-        <a
-            href={to}
+        <Link
+            to={to}
             className="text-[#303030] hover:text-black transition duration-300 text-2xl font-semibold active:text-white leading-8 px-4 py-2 border border-black"
         >
             {label}
-        </a>
+        </Link>
     );
 };

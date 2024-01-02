@@ -3,13 +3,14 @@ import { Button } from "../util";
 import { NetworkLayer } from "../../dojo/createNetworkLayer";
 import Phaser from "phaser";
 import { EVENTS } from "../constants";
+import { SetupResult, setup } from "../../dojo/setup";
 
 const tutorialTexts = [
     "Place trios of hexes to grow your city\noutward from the Castle\n\n\nTry to get the highest score you can!",
-    "STREET hexes are worth 1 point each\nif they're connected to the Castle\n\nAdditionally, every PORT that you\nconnect to the Castle with\nStreets is worth 3 points!",
+    "ROAD hexes are worth 1 point each\nif they're connected to the Castle\n\nAdditionally, every CITY-WALL that you\nconnect to the Castle with\nRoads is worth 3 points!",
     "WATCH TOWERS are worth 1 point if\nthey're not adjacent to any other\nWatch Towers\n\nIf they're also placed on a HILL,\nthey're worth 3 points!",
     "Those are PARKS!\n\nEach group of connected Park hexes is\nworth 5 points for every 3 hexes in it",
-    "Yep! To recap:\n- Streets want to connect Ports to\nthe Castle\n- Watch Towers want to be alone and\non Hills\n- Parks want to be grouped together\nin multiples of 3",
+    "Yep! To recap:\n- Roads want to connect City-Wall to\nthe Castle\n- Watch Towers want to be alone and\non Hills\n- Parks want to be grouped together\nin multiples of 3",
 ];
 
 // const gameJourneyTexts = [
@@ -34,18 +35,31 @@ export class MenuScene extends Phaser.Scene {
     tutorialText: Phaser.GameObjects.BitmapText | null = null;
     tutorialPage = 0;
     tutorialButton: Button | null = null;
-
     constructor() {
         super("menu");
     }
 
-    create() {
+    async preload() {
+        let networkLayer: SetupResult = this.registry.get("networkLayer");
+        if (!networkLayer) {
+            try {
+                networkLayer = await setup();
+                this.registry.set("networkLayer", networkLayer);
+            } catch (err) {
+                console.log(`Failed to setup network layer in main -> create`);
+            }
+        }
+    }
+
+    async create() {
         this.cameras.main.setBounds(-1280, 0, 3840, 720);
         this.menu = this.add.group();
 
         this.background = this.add.image(360, 360, "page");
 
-        this.add.image(920, 360, "blue");
+        const map_pattern = this.add.image(920, 360, "map_pattern");
+        map_pattern.setScale(0.05);
+        map_pattern.setAlpha(0.3);
 
         const realmImage = this.add.image(250, 90, "realms_logo_black");
         realmImage.setScale(0.5);
@@ -110,10 +124,12 @@ export class MenuScene extends Phaser.Scene {
             this,
             1265,
             550,
-            "tutorial-button",
+            "next_arrow",
             this.nextTutorialPage.bind(this)
         );
         this.tutorialButton.setOrigin(0, 0.5);
+
+        // this.tutorialButtonWatchTower.setOrigin(0, 0.5);
 
         for (let r = 0; r < tutorialGrid.length; r++) {
             for (let c = 0; c < tutorialGrid.length; c++) {
@@ -190,11 +206,28 @@ export class MenuScene extends Phaser.Scene {
     }
 
     async play() {
-        const networkLayer: NetworkLayer =
-            this.game.registry.get("networkLayer");
-        console.log("network layer", networkLayer);
-        if (!networkLayer || !networkLayer.account) {
+        const networkLayer: SetupResult = this.registry.get("networkLayer");
+        console.log("play network layer", networkLayer);
+        if (!networkLayer) {
+            try {
+                const networkLayer = await setup();
+                this.registry.set("networkLayer", networkLayer);
+            } catch (err) {
+                console.log(
+                    "Failed to connect to network layer. click on play button again!"
+                );
+            }
+        }
+        console.log("network layer menu", networkLayer);
+
+        console.log(
+            "######## CALLER ACCOUNT ######\n",
+            networkLayer?.network.account.address,
+            "\n###########"
+        );
+        if (!networkLayer || !networkLayer.network.account) {
             return this.game.events.emit(EVENTS.NETWORK_CONNECTION_FAILED);
+            return;
         }
 
         const { network, systemCalls: { spawn } = {} } = networkLayer;
@@ -237,7 +270,8 @@ export class MenuScene extends Phaser.Scene {
             this.tutorialGrid.grid.get(3, 0)?.setVisible(false);
             this.tutorialGrid.grid.get(3, 6)?.setVisible(false);
         } else {
-            this.tutorialButton!.setFrame(this.tutorialPage);
+            console.log(this.tutorialPage);
+            // this.tutorialButton!.setFrame(this.tutorialPage);
             this.tutorialText!.setText(tutorialTexts[this.tutorialPage]);
             for (const hex of this.tutorialGrid.hexes) {
                 hex.setSketchy(

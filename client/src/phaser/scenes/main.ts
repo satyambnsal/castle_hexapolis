@@ -1,3 +1,4 @@
+import { SetupResult, setup } from "../../dojo/setup";
 import { Tile } from "../../dojo/types";
 import {
     HexGrid,
@@ -49,15 +50,18 @@ export class MainScene extends Phaser.Scene {
         super("main");
     }
 
-    create() {
-        this.add.rectangle(640, 360, 1280, 720, 0x90c7e5);
+    async create() {
+        this.add.rectangle(640, 360, 1280, 720);
+        const bgImage = this.add.image(640, 360, "map_pattern");
+        bgImage.setScale(0.2);
+        bgImage.setAlpha(0.1);
         this.score = 0;
         this.scoreBreakdown = [0, 0, 0, 0, 0, 0];
 
         this.pointerDown = false;
 
-        this.waves = this.add.image(640, 360, "waves");
-        this.waves2 = this.add.image(640, 360, "waves2");
+        // this.waves = this.add.image(640, 360, "waves");
+        // this.waves2 = this.add.image(640, 360, "waves2");
 
         this.grid = new HexGrid(this, 5, 8, 0, 0, this.onNewPoints.bind(this));
         this.trihexDeck = this.createTrihexDeck(25, true);
@@ -198,7 +202,7 @@ export class MainScene extends Phaser.Scene {
     onNewPoints(points: number, hexType: number) {
         const networkLayer = this.registry.get("networkLayer");
 
-        if (!networkLayer.account) {
+        if (!networkLayer?.network?.account) {
             alert("Failed to connect to katana network");
             return;
         }
@@ -217,7 +221,7 @@ export class MainScene extends Phaser.Scene {
     async onPlaceTile(tiles: Tile[]) {
         const networkLayer = this.registry.get("networkLayer");
 
-        if (!networkLayer.account) {
+        if (!networkLayer?.network?.account) {
             alert("Failed to connect to katana network");
             return;
         }
@@ -274,7 +278,11 @@ export class MainScene extends Phaser.Scene {
 
     updateBigTrihex() {
         for (let i = 0; i < 3; i++) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
             const row = shapes[this.nextTrihex.shape][i].ro;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             const col = shapes[this.nextTrihex.shape][i].co;
 
             if (this.nextTrihex?.shape === "a") {
@@ -355,12 +363,16 @@ export class MainScene extends Phaser.Scene {
 
     pickNextTrihex() {
         if (this.trihexDeck.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             this.nextTrihex = this.trihexDeck.pop();
 
-            this.deckCounterText.setText(String(this.trihexDeck.length));
+            this.deckCounterText?.setText(String(this.trihexDeck.length));
 
             if (this.trihexDeck.length > 0) {
-                this.deckCounterImage.setTexture(
+                this.deckCounterImage?.setTexture(
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     {
                         a: "a-shape",
                         v: "a-shape",

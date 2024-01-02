@@ -82,7 +82,7 @@ mod tests {
         // get player id
         let tile = get!(world, (GRID_SIZE, GRID_SIZE, player_id), (Tile));
         assert(tile.player_id == player_id, 'Center tile is not set');
-        assert(tile.tile_type == TileType::Center, 'incorrect tile type');
+        assert(tile.tile_type == TileType::Castle, 'incorrect tile type');
     }
 
     #[test]
@@ -91,9 +91,9 @@ mod tests {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
         let tiles = array![
-            (GRID_SIZE, GRID_SIZE + 1, TileType::Grass),
-            (GRID_SIZE, GRID_SIZE + 2, TileType::Grass),
-            (GRID_SIZE, GRID_SIZE + 3, TileType::Grass)
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Park),
+            (GRID_SIZE, GRID_SIZE + 2, TileType::Park),
+            (GRID_SIZE, GRID_SIZE + 3, TileType::Park)
         ];
         actions_.place_tile(tiles.span());
     }
@@ -105,9 +105,9 @@ mod tests {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
         let tiles = array![
-            (GRID_SIZE, GRID_SIZE + 1, TileType::Grass),
-            (GRID_SIZE, GRID_SIZE + 2, TileType::Grass),
-            (GRID_SIZE, GRID_SIZE + 1, TileType::Grass),
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Park),
+            (GRID_SIZE, GRID_SIZE + 2, TileType::Park),
+            (GRID_SIZE, GRID_SIZE + 1, TileType::Park),
         ];
         actions_.place_tile(tiles.span());
     }
@@ -119,9 +119,9 @@ mod tests {
         let (caller, world, actions_) = spawn_world();
         actions_.spawn();
         let mut tiles = array![
-            (GRID_SIZE + 1, GRID_SIZE + 1, TileType::Grass),
-            (GRID_SIZE + 2, GRID_SIZE + 2, TileType::Grass),
-            (GRID_SIZE + 2, GRID_SIZE + 3, TileType::Grass),
+            (GRID_SIZE + 1, GRID_SIZE + 1, TileType::Park),
+            (GRID_SIZE + 2, GRID_SIZE + 2, TileType::Park),
+            (GRID_SIZE + 2, GRID_SIZE + 3, TileType::Park),
         ];
         actions_.place_tile(tiles.span());
     }
@@ -132,9 +132,8 @@ mod tests {
 //     let (caller, world, actions_) = spawn_world();
 //     actions_.spawn();
 //     let player_id = get!(world, caller, (PlayerId)).player_id;
-//     let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Grass);
-//     let tile2 = (GRID_SIZE - 1, GRID_SIZE, TileType::Grass);
-//     let tile3 = (GRID_SIZE + 1, GRID_SIZE, TileType::WindMill);
+//     let tile1 = (GRID_SIZE, GRID_SIZE + 1, TileType::Park);
+//     let tile2 = (GRID_SIZE - 1, GRID_SIZE, TileType::Park);
 //     actions_.place_tile(tile1);
 //     actions_.place_tile(tile2);
 //     actions_.place_tile(tile3);
@@ -152,137 +151,5 @@ mod tests {
 //     tile.counted.print();
 //     let neighbours = actions::get_neighbors(world, tile);
 //     assert(neighbours.len() == 3, 'length should be 3');
-// }
-
-// #[test]
-// #[available_gas(3000000000)]
-// #[should_panic(expected: ('player does not exist', 'ENTRYPOINT_FAILED'))]
-// #[ignore]
-// fn non_player_place_tile() {
-//     let (caller, world, actions_) = spawn_world();
-//     let tile = (3, 4, TileType::Grass);
-//     actions_.place_tile(tile);
-// }
-// #[test]
-// #[available_gas(30000000)]
-// fn random_spawn_test() {
-//     let (caller, world, actions_) = spawn_world();
-
-//     actions_.spawn('r');
-//     // Get player ID
-//     let pos_p1 = get!(world, get!(world, caller, (PlayerId)).id, (Position));
-
-//     let caller = starknet::contract_address_const::<'jim'>();
-//     starknet::testing::set_contract_address(caller);
-//     actions_.spawn('r');
-//     // Get player ID
-//     let pos_p2 = get!(world, get!(world, caller, (PlayerId)).id, (Position));
-
-//     assert(pos_p1.x != pos_p2.x, 'spawn pos.x same');
-//     assert(pos_p1.y != pos_p2.y, 'spawn pos.x same');
-// }
-
-// #[test]
-// #[available_gas(30000000)]
-// fn random_duplicate_spawn_test() {
-//     let (caller, world, actions_) = spawn_world();
-
-//     let id = 16;
-//     let (x, y) = actions::spawn_coords(world, caller.into(), id);
-
-//     // Simulate player #5 on that location
-//     set!(world, (PlayerAtPosition { x, y, id: 5 }));
-
-//     let (x_, y_) = actions::spawn_coords(world, caller.into(), id);
-
-//     assert(x != x_, 'spawn pos.x same');
-//     assert(y != y_, 'spawn pos.x same');
-// }
-
-// #[test]
-// #[available_gas(30000000)]
-// fn moves_test() {
-//     let (caller, world, actions_) = spawn_world();
-
-//     actions_.spawn('r');
-
-//     // Get player ID
-//     let player_id = get!(world, caller, (PlayerId)).id;
-//     assert(1 == player_id, 'incorrect id');
-
-//     let (spawn_pos, spawn_energy) = get!(world, player_id, (Position, Energy));
-
-//     actions_.move(Direction::Up);
-//     // Get player from id
-//     let (pos, energy) = get!(world, player_id, (Position, Energy));
-
-//     // assert player moved and energy was deducted
-//     assert(energy.amt == spawn_energy.amt - MOVE_ENERGY_COST, 'incorrect energy');
-//     assert(spawn_pos.x == pos.x, 'incorrect position.x');
-//     assert(spawn_pos.y - 1 == pos.y, 'incorrect position.y');
-// }
-
-// #[test]
-// #[available_gas(30000000)]
-// fn player_at_position_test() {
-//     let (caller, world, actions_) = spawn_world();
-
-//     actions_.spawn('r');
-
-//     // Get player ID
-//     let player_id = get!(world, caller, (PlayerId)).id;
-
-//     // Get player position
-//     let Position{x, y, id } = get!(world, player_id, Position);
-
-//     // Player should be at position
-//     assert(actions::player_at_position(world, x, y) == player_id, 'player should be at pos');
-
-//     // Player moves
-//     actions_.move(Direction::Up);
-
-//     // Player shouldn't be at old position
-//     assert(actions::player_at_position(world, x, y) == 0, 'player should not be at pos');
-
-//     // Get new player position
-//     let Position{x, y, id } = get!(world, player_id, Position);
-
-//     // Player should be at new position
-//     assert(actions::player_at_position(world, x, y) == player_id, 'player should be at pos');
-// }
-
-// // NOTE: Internal function tests
-
-// #[test]
-// #[available_gas(30000000)]
-// fn encounter_test() {
-//     let (caller, world, actions_) = spawn_world();
-//     assert(false == actions::encounter_win('r', 'p'), 'R v P should lose');
-//     assert(true == actions::encounter_win('r', 's'), 'R v S should win');
-//     assert(false == actions::encounter_win('s', 'r'), 'S v R should lose');
-//     assert(true == actions::encounter_win('s', 'p'), 'S v P should win');
-//     assert(false == actions::encounter_win('p', 's'), 'P v S should lose');
-//     assert(true == actions::encounter_win('p', 'r'), 'P v R should win');
-// }
-
-// #[test]
-// #[available_gas(2000000)]
-// #[should_panic()]
-// fn encounter_rock_tie_panic() {
-//     actions::encounter_win('r', 'r');
-// }
-
-// #[test]
-// #[available_gas(2000000)]
-// #[should_panic()]
-// fn encounter_paper_tie_panic() {
-//     actions::encounter_win('p', 'p');
-// }
-
-// #[test]
-// #[available_gas(2000000)]
-// #[should_panic()]
-// fn encounter_scissor_tie_panic() {
-//     actions::encounter_win('s', 's');
 // }
 }

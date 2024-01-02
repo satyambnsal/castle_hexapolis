@@ -105,6 +105,7 @@ Try to get the highest score you can!
 
 +5 points for every 3 PARKS in a connected group
 
+Deployed Katana Instance: https://api.cartridge.gg/x/castle-hexapolis/katana
 
 
 
@@ -153,17 +154,17 @@ Deployment steps:
 
 ```bash
 # Create and manage deployments
-slot deployments create emoji-man-demo katana
+slot deployments create castle-hexapolis katana
 
 # Retrieve and save credentials
-slot deployments logs emoji-man-demo katana -f
+slot deployments logs castle-hexapolis katana -f
 
 # Build and migrate releases
 sozo --release build
 sozo --release migrate
 
 # Set up torii and connect to the world
-slot deployments create emoji-man-demo torii --rpc https://api.cartridge.gg/x/emoji-man-demo/katana --world 0x1fad58d91d5d121aa6dc4d16c01a161e0441ef75fe7d31e3664a61e66022b1f --start-block 1
+slot deployments create castle-hexapolis torii --rpc https://api.cartridge.gg/x/castle-hexapolis/katana --world 0xb18e8ef76b6739c501ccb7be5121704babacc68976b4b07789e3a366e68b15 --start-block 1
 
 # Update authentication for the release
 ./scripts/default_auth.sh release

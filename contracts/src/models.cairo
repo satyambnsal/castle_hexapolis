@@ -5,11 +5,11 @@ use debug::PrintTrait;
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum TileType {
     Empty,
-    WindMill,
-    Grass,
-    Street,
-    Center,
-    Port
+    WatchTower,
+    Park,
+    Road,
+    Castle,
+    CityGate
 }
 
 // Implementation of a trait to convert TileType enum into felt252 data type
@@ -17,11 +17,11 @@ impl TileTypeIntoFelt252 of Into<TileType, felt252> {
     fn into(self: TileType) -> felt252 {
         match self {
             TileType::Empty(()) => 0,
-            TileType::WindMill(()) => 1,
-            TileType::Grass(()) => 2,
-            TileType::Street(()) => 3,
-            TileType::Center(()) => 4,
-            TileType::Port(()) => 5
+            TileType::WatchTower(()) => 1,
+            TileType::Park(()) => 2,
+            TileType::Road(()) => 3,
+            TileType::Castle(()) => 4,
+            TileType::CityGate(()) => 5
         }
     }
 }
