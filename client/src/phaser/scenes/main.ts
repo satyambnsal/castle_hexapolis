@@ -136,6 +136,7 @@ export class MainScene extends Phaser.Scene {
         }
 
         this.helpPage = this.add.image(640, 360, "help-page");
+        this.helpPage.setScale(0.4);
         this.helpPage.setDepth(5);
         this.helpPage.setVisible(false);
 
