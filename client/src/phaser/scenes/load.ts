@@ -1,4 +1,8 @@
 import Phaser from "phaser";
+
+
+
+
 export class LoadScene extends Phaser.Scene {
     constructor() {
         super("load");
